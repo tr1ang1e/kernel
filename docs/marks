@@ -1,0 +1,70 @@
+
+# --------------------------------------------------------------------------- #
+#                       N O T   C A T E G O R I Z E D                         # 
+# --------------------------------------------------------------------------- #    
+
+
+# --------------------------------------------------------------------------- #
+#                           L O G S   R E A D I N G                           # 
+# --------------------------------------------------------------------------- #
+
+
+How logs are processed:
+    1. printk() -> kernel logs ring buffer
+    2. system log daemon (`ps -A | grep logd`) intercats with ring bffer interface (/proc/kmesg)
+    3. system log daemon -> to user (system log, text console, ...) 
+
+Current system log daemon [man 8 rsyslogd]
+    > config:
+        $ nano /etc/rsyslog.conf                    // main config
+        $ nano /etc/rsyslog.d/<name>.conf           // custom config
+    $ cat /etc/systemd/system/syslog.service        // systemd service unit
+    $ systemctl status rsyslog                      // current status
+    $ systemctl restart rsyslog                     // restart (to apply new conf)
+
+RPI kernel logs:	
+    $ dmesg 		                                // only logs from kernel log buffer
+    $ tail -f /var/log/kern.log	                    // only logs from kernel log buffer
+    $ tail -f /var/log/messages		                // different logs including kernel logs
+
+RPI boot logs
+    $ cat /var/log/boot.log
+
+
+# --------------------------------------------------------------------------- #
+#              D E V E L O P M E N T   E N V I R O N M E N T                  # 
+# --------------------------------------------------------------------------- #    
+
+
+0. Bring OS to appropriate state 
+   [https://www.raspberrypi.com/documentation/computers/os.html#updating-and-upgrading-raspberry-pi-os]
+
+    $ apt update
+    $ apt full-upgrade
+
+1. Build tools
+
+    $ sudo apt install build-essential
+    $ gcc --version
+    $ make --version
+
+2. Linux kernel artifacts for out-of-tree kernel modules
+
+    [!] Bullseye Linux distro, others might differ
+    $ apt-cahe search raspberrypi                   // list all pakages just for reference
+    $ apt install raspberrypi-kernel-headers        // install all neseccary for current kernel oot-modules development
+    
+    // Verification steps
+    $ apt show raspberrypi-kernel-headers           // verify installation info
+    $ ls -l /lib/modules/`uname -r`/build           // verify simlink is created
+    $ tree -L 1 /lib/modules/`uname -r`/build       // verify directories tree
+    $ find / -name Module.symvers                   // verify file with all the exported kernel symbols
+
+    [!] For building in-kernel modules special approach is required [https://github.com/RPi-Distro/rpi-source]
+
+    [?] How to build oot-kernel modules for:
+        - kernel not running on current device or
+        - using toolchain for cross-compile on another distro?
+    
+    [?] How does building from source affect building oot-kernel modules development?
+        Can we use all the headers and exported kernel symbols from kernel build tree?

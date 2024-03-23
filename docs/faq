@@ -1,0 +1,7 @@
+
+# --------------------------------------------------------------------------- #
+#                    V I S U A L   S T U D I O   C O D E                      # 
+# --------------------------------------------------------------------------- #   
+
+Q: Error "function returning array is not allowed C/C++"
+A: Add following defines to c_cpp_properties.json: "__KERNEL__", "MODULE" 
