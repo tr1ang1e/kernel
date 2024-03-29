@@ -5,6 +5,50 @@
 
 
 # --------------------------------------------------------------------------- #
+#           M O D U L E   v s   K E R N E L   I N T E R A C T I O N           # 
+# --------------------------------------------------------------------------- #
+
+
+1. System calls
+
+    All symbols which are defined in kernel are listed in /proc/kallsyms.
+    File format: 
+        (absolute address) (type [see man nm]) (name)
+
+    Get info from file
+        $ cat /proc/kallsyms                  // all symbols
+        $ cat /proc/kallsyms | grep " T "     // filter only exported
+
+2. Error codes
+
+    header:      /lib/modules/`uname -r`/build/include/uapi/asm-generic/errno*
+    comment:     always negative when returning from kernel (-EPERM instead of EPERM)
+
+
+# --------------------------------------------------------------------------- #
+#                    M O D U L E   A P I   F O R   U S E R                    # 
+# --------------------------------------------------------------------------- #
+
+
+1. Log system: see 'LOGS READING' section below
+
+2. Data exchange system calls:  
+   $ sudo cat /proc/kallsyms | grep T | grep <symbol> 
+        symbol:     'copy_to_user' or 'copy_from_user'
+        header:      /lib/modules/`uname -r`/build/include/asm-generic/uaccess.h 
+        comment:     int-ctx-forbidden (disk operations if user memory page not in RAM)
+
+3. Symbol devices names: /dev/<name>
+   Module must implement interface: open(), read(), close(), write()
+
+4. Files:
+        /proc/...    pseudofiles; data is always in symbollic format, not binary
+        /sys/....    modern interface similar to /proc/
+
+5. Net interfaces: create new or modify existent
+
+
+# --------------------------------------------------------------------------- #
 #                           L O G S   R E A D I N G                           # 
 # --------------------------------------------------------------------------- #
 
