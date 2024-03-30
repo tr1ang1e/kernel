@@ -1,23 +1,5 @@
 
 # --------------------------------------------------------------------------- #
-#                       M O D U L E   M A N A G E M E N T                     # 
-# --------------------------------------------------------------------------- #
-
-
-$ insmod <module>.ko                // insert a module into the kernel
-$ rmmod <module>                    // remove a module from the kernel
-$ lsmod | grep <module>             // show the status of module in the kernel
-
-$ modinfo <module>.ko               // show information about a module
-
-$ objdump                           // information from object files
-    -h --headers                    // summary information from the section headers
-
-$ readelf                           // display information about ELF files
-    -s --symbol                     // displays the entries in symbol table section of the file
-
-
-# --------------------------------------------------------------------------- #
 #                       S Y S T E M   M A N A G E M E N T                     # 
 # --------------------------------------------------------------------------- #
 
