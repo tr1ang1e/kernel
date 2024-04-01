@@ -1,0 +1,28 @@
+
+01. MODULES BASICS
+
+    - Module structure
+        
+        > module_init()
+        > module_exit()
+
+    - Logging
+    
+        > printk()
+        > severities
+
+02. CONFIGURATION
+
+    - Parameters
+
+    - Kernel configs
+
+        > compile-time:  #if defined(CONFIG_*)
+        > run-time:      IS_ENABLED(CONFIG_*)
+    
+    - Module refcounter
+
+        > THIS_MODULE, __this_module
+        > try_module_get()
+        > module_refcount()
+        > module_put()

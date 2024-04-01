@@ -29,9 +29,14 @@
 
     C. Autoload: static, while boot
         > do step B.                            // autoload is modprobe related feature 
-        > create /etc/modules-load.d/...        // [see man 8 systemd-modules-load.service and man 5 modules-load.d]
+        > create /etc/modules-load.d/...        // [see man 8 systemd-modules-load.service and man 5 modules-load.d and ROOT/etc/modules-load.d/]
 
-    D. Autoload: dynamic                        // [?] [see man 7 udev] 
+    D. Autoload: dynamic                        // [?] [see man 7 udev]
+
+    E. Options
+        $ modprobe <module> [opt=val]           // also valid for insmod command
+        > or create /etc/modprobe.d/...         // [see man 5 modprobe.d and ROOT/etc/modprobe.d/]
+        > /sys/module/<module>/parameters/      // if params permissios differ from 0 value
 
 3. Blacklist 
 
@@ -58,6 +63,13 @@
 
     header:      /lib/modules/`uname -r`/build/include/uapi/asm-generic/errno*
     comment:     always negative when returning from kernel (-EPERM instead of EPERM)
+
+3. Kernel configuration
+
+    Configs which set while kernel build cant be changed later so module 
+    might take this configs into the account to determine it's behavior: 
+        > list    =  /boot/config-`uname -r` or /lib/modules/'`uname -r`/build/.config
+        > header  =  /lib/modules/`uname -r`/build/include/generated/autoconf.h
 
 
 # --------------------------------------------------------------------------- #
@@ -96,7 +108,7 @@ How logs are processed:
 Current system log daemon [man 8 rsyslogd]
     > config:
         $ nano /etc/rsyslog.conf                    // main config
-        $ nano /etc/rsyslog.d/<name>.conf           // custom config
+        $ nano /etc/rsyslog.d/<name>.conf           // custom config [see ROOT/etc/rsyslog.d/]
     $ cat /etc/systemd/system/syslog.service        // systemd service unit
     $ systemctl status rsyslog                      // current status
     $ systemctl restart rsyslog                     // restart (to apply new conf)
