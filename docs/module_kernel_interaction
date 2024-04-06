@@ -1,0 +1,35 @@
+
+# --------------------------------------------------------------------------- #
+#           M O D U L E   v s   K E R N E L   I N T E R A C T I O N           # 
+# --------------------------------------------------------------------------- #
+
+
+1. System calls
+
+    All symbols which are defined in kernel are listed in either:
+        > find / -name Module.symvers         // STATIC symbols    
+        > /proc/kallsyms                      // STATIC + DYNAMIC symbols (format = absolute_address type name) [see man nm]
+
+    Get info:
+        $ cat /proc/kallsyms                  // all symbols
+        $ cat /proc/kallsyms | grep " T "     // filter only exported
+
+    ASLR (address space layout randomization): 
+        absolute addresses from STATIC anbd DYNAMIC tables might differ
+        - every boot
+        - random value for one boot
+        - the same valu for all symbols
+
+
+2. Error codes
+
+    header:      /lib/modules/`uname -r`/build/include/uapi/asm-generic/errno*
+    comment:     always negative when returning from kernel (-EPERM instead of EPERM)
+
+
+3. Kernel configuration
+
+    Configs which set while kernel build cant be changed later so module 
+    might take this configs into the account to determine it's behavior: 
+        > list    =  /boot/config-`uname -r` or /lib/modules/'`uname -r`/build/.config
+        > header  =  /lib/modules/`uname -r`/build/include/generated/autoconf.h  (CONFIG_*)

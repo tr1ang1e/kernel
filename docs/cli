@@ -19,10 +19,6 @@ $ tty                               // print the file name of the current virtua
 
 $ file                              // determine file type
 
-$ rm                                // remove files or directories
-    -f --force                      // ignore nonexistent files and arguments, never prompt
-    -r --recursive                  // remove directories and their contents recursively
-
 $ which                             // locate a command
 
 

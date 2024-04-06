@@ -1,0 +1,28 @@
+# --------------------------------------------------------------------------- #
+#                    K E R N E L   L O G S   R E A D I N G                    # 
+# --------------------------------------------------------------------------- #
+
+
+How logs are processed:
+    1. printk() -> kernel logs ring buffer
+    2. system log daemon (`ps -A | grep logd`) interacts with ring bffer interface (/proc/kmesg)
+    3. system log daemon -> to user (system log, text console, ...) 
+
+
+Current system log daemon [man 8 rsyslogd]
+    > config:
+        $ nano /etc/rsyslog.conf                    // main config
+        $ nano /etc/rsyslog.d/<name>.conf           // custom config [see ROOT/etc/rsyslog.d/]
+    $ cat /etc/systemd/system/syslog.service        // systemd service unit
+    $ systemctl status rsyslog                      // current status
+    $ systemctl restart rsyslog                     // restart (to apply new conf)
+
+
+RPI kernel logs:	
+    $ dmesg 		                                // only logs from kernel log buffer
+    $ tail -f /var/log/kern.log	                    // only logs from kernel log buffer
+    $ tail -f /var/log/messages		                // different logs including kernel logs
+
+
+RPI boot logs
+    $ cat /var/log/boot.log

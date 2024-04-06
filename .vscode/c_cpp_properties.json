@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/lib/modules/6.1.21-v8+/build/include",
+                "/lib/modules/6.1.21-v8+/build/arch/arm64/include/",
+                "/lib/modules/6.1.21-v8+/build/arch/arm64/include/generated/"
+            ],
+            "defines": [ "__KERNEL__", "MODULE" ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c17",
+            "intelliSenseMode": "linux-gcc-arm64"
+        }
+    ],
+    "version": 4
+}

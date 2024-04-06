@@ -21,6 +21,13 @@ Special marks:
     [see]   =  external link  
     $       =  shell command (sudo is always skipped)  
 
+
 Special names:  
     ROOT    = project root directory
-    
+
+
+Techonologies to be involved later
+    profiler (https://linux-kernel-labs.github.io/refs/heads/master/labs/kernel_profiling.html)  
+    static and dynamic analizers (gcc, ...)  
+    multithread debugging (valgrind, ...)  
+    testing (gtest/gmock)  

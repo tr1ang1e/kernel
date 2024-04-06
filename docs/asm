@@ -1,0 +1,39 @@
+
+# --------------------------------------------------------------------------- #
+#                    A S S E M B L E R   L A N G U A G E                      # 
+# --------------------------------------------------------------------------- #  
+
+
+GCC inline assembly = https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html
+
+
+1. assembler
+
+    Module development assembler has AT&T notation.
+    Other notations are: nasm, yasm.
+    Get assembler version and additional info:  $ as --version
+    
+
+2. intermediate asm representation
+
+    [?] How to use Makefile to kepp intermediate
+        asm representation of module is building?
+
+
+3. AT&T notation
+
+    > order             <op> <src>, <dest>
+    > size              (b)yte (w)ord (l)ong (q)uaword          // necessary to specify
+    > register          %<register>                             // no reserved words
+    > constant          $<constant>
+    > address           <address>
+
+    - Examples:
+        movl  $123  ,  %eax     ; constant to register
+        movl  123   ,  %eax     ; value from addr 123 to register
+        movl  var   ,  %eax     ; var value to register
+        movl  $var  ,  %eax     ; var addr to register
+        movl  (var) ,  %eax     ; value from addr wich is stored as value in var to register
+
+    > SIB byte instruction encoding [?] What is it?
+       

@@ -26,3 +26,5 @@
         > try_module_get()
         > module_refcount()
         > module_put()
+
+03. INLINE ASSEMBLY

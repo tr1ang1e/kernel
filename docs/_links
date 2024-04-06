@@ -5,4 +5,7 @@ GNU
     GCC .................................. https://gcc.gnu.org/onlinedocs/gcc/
 
 Linux kernel ............................. https://www.kernel.org/doc/
-    Building External Modules ............  https://www.kernel.org/doc/Documentation/kbuild/modules.txt
+    Building External Modules ............ https://www.kernel.org/doc/Documentation/kbuild/modules.txt
+
+Man pages essentially useful
+    5   proc ............................. pseudo-fs which provides interface to kernel data structures

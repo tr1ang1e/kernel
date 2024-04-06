@@ -1,0 +1,26 @@
+
+# --------------------------------------------------------------------------- #
+#                    M O D U L E   A P I   F O R   U S E R                    # 
+# --------------------------------------------------------------------------- #
+
+
+1. Log system: see 'LOGS READING' section below
+
+
+2. Data exchange system calls:  
+   $ sudo cat /proc/kallsyms | grep T | grep <symbol> 
+        symbol:     'copy_to_user' or 'copy_from_user'
+        header:      /lib/modules/`uname -r`/build/include/asm-generic/uaccess.h 
+        comment:     interrupt-ctx-forbidden (disk operations if user memory page not in RAM)
+
+
+3. Symbol devices names: /dev/<name>
+   Module must implement interface: open(), read(), close(), write()
+
+
+4. Files:
+        /proc/...    pseudofiles; data is always in symbollic format, not binary
+        /sys/....    modern interface similar to /proc/
+
+
+5. Net interfaces: create new or modify existent

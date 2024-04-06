@@ -1,0 +1,43 @@
+
+# --------------------------------------------------------------------------- #
+#                       M O D U L E   M A N A G E M E N T                     # 
+# --------------------------------------------------------------------------- #
+
+
+1. Information
+
+    $ modinfo <module>.ko                       // show information about a module
+    $ objdump <module>.ko [ -h ... ]            // information from object files
+    $ readelf <module>.ko [ -s ... ]            // display information about ELF files
+    $ lsmod | grep <module>                     // show the status of module in the kernel
+
+
+2. Management
+
+    A. Without checking dependencies
+        $ insmod <module>.ko                    // insert a module into the kernel
+        $ rmmod <module>                        // remove a module from the kernel
+
+    B. With checking dependencies
+        $ cp <module>.ko /lib/modules/`uname -r`/...
+        $ depmod -a                             // update dependencies [see man 8 depmod]
+        $ modprobe <module>                     // insert a module into the kernel after insertion all dependencies
+
+    C. Autoload: static, while boot
+        > do step B.                            // autoload is modprobe related feature 
+        > create /etc/modules-load.d/...        // [see man 8 systemd-modules-load.service and man 5 modules-load.d and ROOT/etc/modules-load.d/]
+
+    D. Autoload: dynamic                        // [?] [see man 7 udev]
+
+
+3. Blacklist 
+
+    > create /etc/modprobe.d/...                // [see man 5 modprobe.d]
+    > insert 'blacklist <module>'               // [see man 5 modprobe.d]
+
+
+4. Options
+
+    $ modprobe <module> [opt=val]           // also valid for insmod command
+    > or create /etc/modprobe.d/...         // [see man 5 modprobe.d and ROOT/etc/modprobe.d/]
+    > /sys/module/<module>/parameters/      // if params permissios differ from 0 value
