@@ -9,6 +9,7 @@
     $ modinfo <module>.ko                       // show information about a module
     $ objdump <module>.ko [ -h ... ]            // information from object files
     $ readelf <module>.ko [ -s ... ]            // display information about ELF files
+    $ nm <module>.ko                            // lists all file symbols [see man 1 nm]
     $ lsmod | grep <module>                     // show the status of module in the kernel
 
 
@@ -19,8 +20,9 @@
         $ rmmod <module>                        // remove a module from the kernel
 
     B. With checking dependencies
-        $ cp <module>.ko /lib/modules/`uname -r`/...
+        $ cp <module>.ko /lib/modules/KDIR/...  // choose mostly valid nested directory  
         $ depmod -a                             // update dependencies [see man 8 depmod]
+        > check /lib/modules/KDIR/modules.dep   // contatins info of module and dependencies required by modprobe
         $ modprobe <module>                     // insert a module into the kernel after insertion all dependencies
 
     C. Autoload: static, while boot
@@ -38,6 +40,6 @@
 
 4. Options
 
-    $ modprobe <module> [opt=val]           // also valid for insmod command
-    > or create /etc/modprobe.d/...         // [see man 5 modprobe.d and ROOT/etc/modprobe.d/]
-    > /sys/module/<module>/parameters/      // if params permissios differ from 0 value
+    $ modprobe <module> [opt=val]               // also valid for insmod command
+    > or create /etc/modprobe.d/...             // [see man 5 modprobe.d and ROOT/etc/modprobe.d/]
+    > /sys/module/<module>/parameters/          // if params permissios differ from 0 value

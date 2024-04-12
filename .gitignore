@@ -1,5 +1,7 @@
 # examples source scode
 *book
+*test
+
 
 # build artifacts
 *.order

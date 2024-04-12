@@ -1,0 +1,214 @@
+
+
+/* --------------------------------------------------------- */
+/*           K E R N E L   B U I L D   S Y S T E M           */
+/* --------------------------------------------------------- */
+
+
+All paths in this section are relative to /lib/modules/`uname -r`/build/
+
+Linux kernel build system (KBUILD) is a complex infrastructure of
+
+    > Kconfig           = menu specification files which help to configure build        [see ./Kconfig                           ]
+    > CONFIG_* symbols  = selected configuration parameters                             [see kernel configuration file: ./.config]
+    > kbuild Makefiles  = files describing make targets
+                            - the top Makefile                                          [see ./Makefile                          ]
+                            - arch Makefile                                             [see ./arch/<arch>/Makefile              ]
+                            - common rules etc. for all kbuild Makefiles                [see ./scripts/Makefile*                 ]
+                            - regular Makefiles in every subdirectory
+                                  might be splitted into:
+                                  * Makefile  :  build configuration and flow 
+                                  * Kbuild    :  module name + source files
+
+The MAKE is utility which builds kernel/modules according
+to the rules, configs, ... etc. described by kbuild system.
+
+The following information structuralized in not usual way. In fact
+all the information is complete build files with comments. But to 
+have a better understanding, reading should be performed according 
+to the numeration which is not linear. Start with the basic Make 
+info under the number 0 and then go to 1, 2, ... etc.
+
+Read about resursive and non-resursive Make:
+    - "Recursive Make Considered Harmful"  https://aegis.sourceforge.net/auug97.pdf
+    - "Implementing non-recursive make"    http://sites.e-advies.nl/nonrecursive-make.html
+
+
+/* --------------------------------------------------------- */
+/*            K B U I L D   F I L E   B A S I C S            */
+/* --------------------------------------------------------- */
+
+
+                >> ----------- 6 ----------- <<
+
+
+>> ccflags-y := -std=gnu11 --no-warnings
+>> asflags-y := 
+>> ldflags-y := 
+
+As some targets are implicit and we still want to have a way 
+to affect the compile and linking process, there are several
+special variables to be specified to pass flags. They are:
+
+    - apply only to the current kbuild makefile
+    - insted of deprecated EXTRA_CFLAGS, EXTRA_AFLAGS and EXTRA_LDFLAGS
+
+
+                >> ----------- 3 ----------- <<
+
+
+>> obj-m := <module_name_1>.o <module_name_2>.o ...
+
+Special variable 'obj-m' contains list of modules to be built.
+If module source code is contained in a single file, this line
+is enough to build the module. The source file name is detected
+automatically as <module_name_*>.c
+
+When <module_name_*>.o compiled from sources it is linked 
+against kernel symbols and is transformed to the module:
+    file = <module_name_*>.ko
+    name = <module_name_*>
+
+If one of module is dependency (export symbols) for other,
+it's important to build them together, because the export
+symbols will not appear in kernel ./Module.symvers but only
+in current build directory ./Module.symvers and Therefore
+Make will not see them
+
+
+                >> ----------- 4 ----------- <<
+
+
+>> <module_name_*>-y := <module_name_*>_main.o <src_1>.o <src_2>.o ...
+
+If module should be compiled from several source files, additional
+variable should be initialized. This variable possible names are:
+    <module_name_*>-y       common for building modules
+    <module_name_*>-objs    the same effect, but usually used for "Host Program"
+
+If there are several source files it's better to avoid to name one of module 
+source files as module itself. Le it be <module_name_*>_main.c for example.
+
+
+/* --------------------------------------------------------- */
+/*              M A K E F I L E   B A S I C S                */
+/* --------------------------------------------------------- */
+
+
+                >> ----------- 0 ----------- <<
+
+
+When Makefile is proceed, the number of environmetal variables are
+implicitely initialized:
+
+    MAKE        Make utility executable    
+    PWD         Directory of Makefile is proceed
+
+
+                >> ----------- 9 ----------- <<
+
+
+>> CONFIG_MODULE_SIG=n
+
+    All modules must be signed according to "secure boot" concept.
+    To supress warnings about module is not signed this line is used.
+    Correct way to sign the module see in kernel documentation.
+
+
+                >> ----------- 8 ----------- <<
+
+
+>> KERN  := ${shell uname -r}   
+>> KDIR  := /lib/modules/${KERN}/build/
+>> DEST  := /lib/modules/${KERN}/kernel/custom/
+
+To simplify Makefile variables might be used. Variable contains the
+value wich might be hardcoded or evaluated:
+    by executing custom command      <var> := ${ <command> <args> }
+    according to another variable    <var> := ${ <another_var> }
+
+
+                >> ----------- 1 ----------- <<
+
+
+>> all: build install distclean
+>> build: modules clean
+
+When executing `make` in CLI the first target in all target chains is 
+the target which goes first in the Makefile, if other doesn't specify 
+explicitely by `make <target>`. Therefore in current example commands
+`make` and `make all` are equal. But `make modules` will lead to the
+'modules' target considered as entry point and 'clean' target ingnored.
+
+
+                >> ----------- 2 ----------- <<
+
+
+>> modules:
+>>    $(MAKE) -C <path_to_kernel_src> M=<path_to_module_src> [target]
+
+Actually, all we do is just transfer control over the build to Kbuild
+system by proceeding nested `make' command.
+
+Make knows that oot-module must be build because of 'M=' option. All
+operations will be done in <path_to_module_src> directory. All build
+artifats are also placed in this directory.
+
+The unnecessary 'target' specifies target which will be procced
+inside nested `make` subroutine. Default target is 'modules'.
+
+
+                >> ----------- 5 ----------- <<
+
+>> ...
+>> ...
+
+At this step we've specified 
+    - modules build command             (step 2)
+    - intermediate module's .o name     (step 3)
+    - intermediate sources' .o names    (step 4)
+    
+The following sequense will be performed by Make:
+    <module_name_*>_main.c   ->   <module_name_*>_main.o
+    <src1>.c                 ->   <src1>.o
+    <src2>.c                 ->   <src2>.o
+    all object files         ->   <module_name_*>.o
+    <module_name_*>.o        ->   <module_name_*>.ko
+    
+All these build operatrions are done according to IMPLICIT RULES
+and should not be specified as independent targest explicitely
+as long as *.c and *.o names are correlated. Main rules are:
+
+    compile  :  $(CC) $(CPPFLAGS) $(CFLAGS) -c
+    linking  :  $(CC) $(LDFLAGS) $(LOADLIBES) $(LDLIBS)
+
+
+                >> ----------- 8 ----------- <<
+
+
+>> clean:
+>>    @rm -f    *.o  .*.cmd  .*.cmd  .*.flags  *.mod.c  *.order .*.*.cmd  *~  *.*~  TODO.*  .*.d
+>>	  @rm -rf   .tmp*  *.mod
+
+This target covers all temporarily build artifacts to be removed automatically
+
+>> distclean:
+>>    @rm -f    *.ko  *.symvers
+
+This target covers module and symvers files to be removed if necessary
+
+
+                >> ----------- 9 ----------- <<
+
+>> install:
+>>     @if [ ! -d ${DEST} ]; then mkdir ${DEST}; fi
+>>     @cp ootm.ko ${DEST} && depmod -a
+
+Not only simple but also complecs bash commands might be executed.
+[!] Every command under the target is done with invoking NEW SHELL
+
+>> uninstall:
+>>    @rm ${DEST}/ootm.ko && depmod -a
+>>    @if [ -d ${DEST} ] && [ ! "$(ls -A ${DEST})" ]; then rm -rf ${DEST}; fi
+
+Unintall target is strongly necessary if install tartget is implemented.

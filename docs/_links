@@ -1,11 +1,20 @@
 RPI documentation ........................ https://www.raspberrypi.com/documentation/
 
+
 GNU 
     Make ................................. https://www.gnu.org/software/make/manual/html_node/index.html
     GCC .................................. https://gcc.gnu.org/onlinedocs/gcc/
 
-Linux kernel ............................. https://www.kernel.org/doc/
+
+Linux kernel ............................. https://www.kernel.org/doc/  or  https://docs.kernel.org/
+
+
+Build system
+    GNU Make manual ...................... https://www.gnu.org/software/make/manual/
+    GNU Make by examples ................. https://makefiletutorial.com/
+    Kbuild Makefiles ..................... https://www.kernel.org/doc/Documentation/kbuild/makefiles.txt
     Building External Modules ............ https://www.kernel.org/doc/Documentation/kbuild/modules.txt
+
 
 Man pages essentially useful
     5   proc ............................. pseudo-fs which provides interface to kernel data structures

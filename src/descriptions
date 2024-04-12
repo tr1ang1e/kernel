@@ -28,3 +28,12 @@
         > module_put()
 
 03. INLINE ASSEMBLY
+
+04. SYMBOL EXPORTING
+
+    - Source code
+    
+        > several files
+        > EXPORT_SYMBOL
+    
+    - Makefile + Kbuild basics

@@ -29,7 +29,7 @@
 
 3. Kernel configuration
 
-    Configs which set while kernel build cant be changed later so module 
+    Configs which set while kernel build cant be changed later. So module 
     might take this configs into the account to determine it's behavior: 
-        > list    =  /boot/config-`uname -r` or /lib/modules/'`uname -r`/build/.config
+        > list    =  /boot/config-`uname -r` or /lib/modules/`uname -r`/build/.config
         > header  =  /lib/modules/`uname -r`/build/include/generated/autoconf.h  (CONFIG_*)

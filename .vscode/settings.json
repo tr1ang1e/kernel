@@ -3,6 +3,8 @@
         "init.h": "c",
         "compiler.h": "c",
         "compiler_types.h": "c",
-        "limits.h": "c"
+        "limits.h": "c",
+        "module.h": "c",
+        "export.h": "c"
     }
 }

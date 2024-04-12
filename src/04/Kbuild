@@ -1,0 +1,8 @@
+ccflags-y := -std=gnu11 --no-warnings
+asflags-y := 
+ldflags-y := 
+
+TARGET_MODULES := ootm.o ootm_call.o
+OOTM_MODULE_SRC := ootm_main.o extern.o
+obj-m := ${TARGET_MODULES}
+ootm-y := ${OOTM_MODULE_SRC}

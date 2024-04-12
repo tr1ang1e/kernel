@@ -24,6 +24,7 @@ Special marks:
 
 Special names:  
     ROOT    = project root directory
+    KDIR    = /lib/modules/`uname -r`/ directory
 
 
 Techonologies to be involved later
