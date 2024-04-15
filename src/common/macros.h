@@ -1,5 +1,5 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef MACROS_H
+#define MACROS_H
 
 
 /* --------------------------------------------------------- */
@@ -11,4 +11,4 @@
 #define FILENAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 
-#endif // COMMON_H
+#endif // MACROS_H

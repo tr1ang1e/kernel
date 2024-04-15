@@ -8,3 +8,10 @@ _. GCC
 
     $ man gcc | grep "--help={"                 // show cli-options involved into `gcc ...` command
 
+
+_. (Device driver + device tree) vs. (Module)
+
+    example [see module_platform_driver] = https://github.com/raspberrypi/linux/blob/rpi-5.10.y/drivers/thermal/broadcom/bcm2835_thermal.c
+    struct platform_driver = https://www.kernel.org/doc/Documentation/driver-model/platform.txt
+    faq = https://stackoverflow.com/questions/64861848/how-to-use-a-linux-platform-driver
+    faq = https://stackoverflow.com/questions/26840267/driver-code-in-kernel-module-doesnt-execute
