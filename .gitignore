@@ -11,3 +11,7 @@
 *.mod.c
 *.o
 *.ko
+
+
+# vscode unnecessary
+.vscode/settings.json

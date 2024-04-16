@@ -1,17 +1,23 @@
 #include <linux/init.h>
-#include <linux/module.h>
+#include <common/author.h>
 #include <common/macros.h>
 
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("tr1angle <tr1angle.goog1e@gmail.com>");
+/* --------------------------------------------------------- */
+/*                 S T A T I C   D A T A                     */
+/* --------------------------------------------------------- */
+
+
+/* --------------------------------------------------------- */
+/*             M O D U L E   M A N A G E M E N T             */
+/* --------------------------------------------------------- */
 
 
 static int 
 __init 
 ootm_main_init(void)
 {
-    printk("Hello from %s!\n", FILENAME);
+    GREETING();
     return 0;
 }
 
@@ -20,6 +26,7 @@ static void
 __exit 
 ootm_main_exit(void)
 {
+    FAREWELL();
     return;
 }
 

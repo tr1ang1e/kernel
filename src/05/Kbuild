@@ -21,4 +21,6 @@ obj-m := ${TARGET_MODULES}
 
 # target modules source object files
 MODULE_OOTM_OBJS := ootm_main.o
+MODULE_OOTM_OBJS += ../common/fops/read/read.o
+MODULE_OOTM_OBJS += ../common/fops/open/open.o
 ootm-y := ${MODULE_OOTM_OBJS}

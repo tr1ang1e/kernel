@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------- #
 
 
-1. Log system: see 'LOGS READING' section below
+1. Log system: see doc about reading kernel logs
 
 
 2. Data exchange system calls:  
@@ -24,3 +24,114 @@
 
 
 5. Net interfaces: create new or modify existent
+
+
+# --------------------------------------------------------------------------- #
+#                           M O D U L E   D E S I G N                         # 
+# --------------------------------------------------------------------------- #
+
+
+Three key points:
+
+        (1) How to register driver and notify system about new device is connected
+
+        (2) How to create new /dev/ name and link it with major/minor device number
+
+        (3) How to implement required API (open, close, ...)
+
+
+# --------------------------------------------------------------------------- #
+#                     ( 1 )   R E G I S T E R   D R I V E R                   # 
+# --------------------------------------------------------------------------- #
+
+
+Available approaches:
+
+1. Using 'struct cdev' [see <linux/cdev.h>]
+
+        >> static struct file_operations fops = { ... };		// file operations
+        >> static struct cdev hcdev = { 0 };				// cdev handler
+    	>> cdev_init(&hcdev, &fops);					// always success
+    	>> hcdev.owner = THIS_MODULE;					// 
+	>> int ret = cdev_add(&hcdev, MKDEV(...), DEVICE_COUNT);	// negative ret is error
+
+2. Misc drivers (miscellaneous)
+
+        ...
+        ...
+        ...
+
+3. Using 'register_chrdev()'
+
+        ...
+        ...
+        ...
+
+
+# --------------------------------------------------------------------------- #
+#                     ( 2 )   / D E V /   I N T E R F A C E                   # 
+# --------------------------------------------------------------------------- #
+
+
+/dev/ name is linked against particular module via combination of:
+        - major number = device class
+        - minor number = concrete device class instance
+
+>> #include <linux/types.h>
+>> #include <linux/kdev_t.h>
+>> dev_t dev = <complex_value>;
+>> int major = MAJOR(dev);              // retreive major value from complex
+>> int minor = MINOR(dev);              // retreive minor value from complex
+
+Approaches to set dev_t <complex_value> and register it:
+
+>> dev = MKDEV(major, minor); 
+>> alloc_chrdev_region(&dev, <device_count>, <device_name>);    		  // automatically      
+>> register_chrdev_region(dev, <device_first>, <device_count>, <device_name>);    // manually 
+>> unregister_chrdev_region(dev, <device_count>);				  // at the module work end unregister is necessary
+     
+After device with major and minor value is registered 
+we should check if it is really presents in system and
+then link it against /dev/<device> filename:
+
+        $ lsmod | grep <module>.ko                      // check if module is loaded
+        $ cat /proc/devices | grep <device_name>        // check if module is registered as device
+        $ mknod -m006 /dev/<device> c <major> <minor>   // link registered device against /dev/<device>
+
+When module is linked against device name in /dev/<device>, 
+such a module is named and considered as DEVICE DRIVER.
+
+Device removal must be performed in reverse order:
+
+        $ rm /dev/<device>
+        $ rmmod <module>
+
+[!] It's not realy necessary to create device node in /dev/ directory. 
+Every accessible directory with appropriate permissions is suitable: for 
+example, noe might be created in the directory of module compilation.
+
+
+# --------------------------------------------------------------------------- #
+#                        ( 3 )   R E Q U I R E D   A P I                      # 
+# --------------------------------------------------------------------------- #
+
+
+Almost all useful work is done using structures:
+
+>> #include <linux/fs.h>
+>> struct file_operations = { ... };
+>> struct inode_operations = { ... };
+
+If handler function is specified it will be called for corresponding
+operation. Otherwise either DAFAULT HANDLER will be called or specific
+error 'not implemented yet' will be returned
+
+Handler prototypes are mostly of the following template:
+
+        file_operations   =  <type> (*<name>) (struct file *, <args>);
+        inode_operations  =  <type> (*<name>) (struct inode *, <args>);
+
+[!] The 'struct file *' argument is associated with particulatr file
+    descriptor and therefore might differ from call to call as several
+    file descriptors are allowed for the same device and all of them
+    are unique. But 'struct inode *' is always the same as it's unique

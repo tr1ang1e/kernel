@@ -86,8 +86,13 @@ variable should be initialized. This variable possible names are:
     <module_name_*>-y       common for building modules
     <module_name_*>-objs    the same effect, but usually used for "Host Program"
 
-If there are several source files it's better to avoid to name one of module 
-source files as module itself. Le it be <module_name_*>_main.c for example.
+[!] If there are several source files it's better to avoid to name one of module 
+source files as module itself. Let it be <module_name_*>_main.c for example. and
+it's important to name all object files as source files: it makes possible for
+Make to use implicit rules (see further)
+
+[!] If source file is not in current directory it's better to specify RELATIVE
+and not absolute path to it. Because sometimes absolute path won't work.
 
 
 /* --------------------------------------------------------- */
