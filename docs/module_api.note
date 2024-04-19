@@ -8,7 +8,7 @@
 
 
 2. Data exchange system calls:  
-   $ sudo cat /proc/kallsyms | grep T | grep <symbol> 
+   $ cat /proc/kallsyms | grep T | grep <symbol> 
         symbol:     'copy_to_user' or 'copy_from_user'
         header:      /lib/modules/`uname -r`/build/include/asm-generic/uaccess.h 
         comment:     interrupt-ctx-forbidden (disk operations if user memory page not in RAM)
@@ -73,7 +73,7 @@ Available approaches:
 # --------------------------------------------------------------------------- #
 
 
-/dev/ name is linked against particular module via combination of:
+/dev/<device> is linked against particular module via combination of:
         - major number = device class
         - minor number = concrete device class instance
 
@@ -86,31 +86,46 @@ Available approaches:
 Approaches to set dev_t <complex_value> and register it:
 
 >> dev = MKDEV(major, minor); 
->> alloc_chrdev_region(&dev, <device_count>, <device_name>);    		  // automatically      
->> register_chrdev_region(dev, <device_first>, <device_count>, <device_name>);    // manually 
+>> alloc_chrdev_region(&dev, <device_count>, <device_name>);    		  // variant 1: automatically      
+>> register_chrdev_region(dev, <device_first>, <device_count>, <device_name>);    // variant 2: manually 
 >> unregister_chrdev_region(dev, <device_count>);				  // at the module work end unregister is necessary
-     
-After device with major and minor value is registered 
-we should check if it is really presents in system and
-then link it against /dev/<device> filename:
 
-        $ lsmod | grep <module>.ko                      // check if module is loaded
-        $ cat /proc/devices | grep <device_name>        // check if module is registered as device
-        $ mknod -m006 /dev/<device> c <major> <minor>   // link registered device against /dev/<device>
+After it we should choose approach of how will 
+device with registered major and minor values be 
+linked against /dev/<device> filename:
 
-When module is linked against device name in /dev/<device>, 
-such a module is named and considered as DEVICE DRIVER.
+        - manually              $ mknod ...                             [see man 1 mknod]
+        - automatically         sytemd daemon 'udev'                    [see man 7 udev]
+        - automatically         class_create() + device_create()        [see https://www.kernel.org/doc/html/latest/driver-api/infrastructure.html]
 
-Device removal must be performed in reverse order:
+And finally When module is linked against device name in /dev/<device>, 
+such a module is named and considered as DEVICE DRIVER. Device unlinking
+must be also done via the same mechanism as it was linked.
 
-        $ rm /dev/<device>
-        $ rmmod <module>
-
-[!] It's not realy necessary to create device node in /dev/ directory. 
+[!] It is not realy necessary to create device node in /dev/ directory. 
 Every accessible directory with appropriate permissions is suitable: for 
-example, noe might be created in the directory of module compilation.
+example, node might be created in the directory of module compilation.
+
+1. Manually: mknod
+
+        Linking:
+        
+                > load module (insmod or modprobe)
+                $ lsmod | grep <module>.ko                      // check if module is loaded
+                $ cat /proc/devices | grep <device_name>        // check if module is registered as device
+                $ mknod -m006 /dev/<device> c <major> <minor>   // link registered device against /dev/<device>
+
+        Device removal must be performed in reverse order:
+
+                $ rm /dev/<device>                              // unlink registered device from /dev/<device>
+                > remove module (rmmod or modprobe)
+
+2. Automatically: udev    [: udev :]
 
 
+3. Automatically: class_create() + device_create()
+
+        
 # --------------------------------------------------------------------------- #
 #                        ( 3 )   R E Q U I R E D   A P I                      # 
 # --------------------------------------------------------------------------- #

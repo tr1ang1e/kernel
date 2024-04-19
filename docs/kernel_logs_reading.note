@@ -4,15 +4,15 @@
 
 
 How logs are processed:
-    1. printk() -> kernel logs ring buffer
-    2. system log daemon (`ps -A | grep logd`) interacts with ring bffer interface (/proc/kmesg)
-    3. system log daemon -> to user (system log, text console, ...) 
+    (1) printk() -> kernel logs ring buffer
+    (2) system log daemon (`ps -A | grep logd`) interacts with ring bffer interface (/proc/kmesg)
+    (3) system log daemon -> to user (system log, text console, ...) 
 
 
-Current system log daemon [man 8 rsyslogd]
+Current system log daemon [see man 8 rsyslogd]
     > config:
         $ nano /etc/rsyslog.conf                    // main config
-        $ nano /etc/rsyslog.d/<name>.conf           // custom config [see ROOT/etc/rsyslog.d/]
+        $ nano /etc/rsyslog.d/<name>.conf           // custom config [see ROOT/etc/rsyslog.d/]    [: rsyslog.d :]
     $ cat /etc/systemd/system/syslog.service        // systemd service unit
     $ systemctl status rsyslog                      // current status
     $ systemctl restart rsyslog                     // restart (to apply new conf)

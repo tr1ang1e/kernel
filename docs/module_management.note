@@ -27,19 +27,19 @@
 
     C. Autoload: static, while boot
         > do step B.                            // autoload is modprobe related feature 
-        > create /etc/modules-load.d/...        // [see man 8 systemd-modules-load.service and man 5 modules-load.d and ROOT/etc/modules-load.d/]
+        > create /etc/modules-load.d/...        // [see man 8 systemd-modules-load.service and man 5 modules-load.d and ROOT/etc/modules-load.d/]    [: modules-load.d :]
 
-    D. Autoload: dynamic                        // [?] [see man 7 udev]
+    D. Autoload: dynamic                        // when udev event happens, according to the rule [see man 7 udev]    [: udev :]
 
 
 3. Blacklist 
 
-    > create /etc/modprobe.d/...                // [see man 5 modprobe.d]
-    > insert 'blacklist <module>'               // [see man 5 modprobe.d]
+    > create /etc/modprobe.d/...                // [see man 5 modprobe.d]    [: modprobe.d :] 
+    > insert 'blacklist <module>'               // [see man 5 modprobe.d]    [: modprobe.d :] 
 
 
-4. Options
+4. Options      
 
-    $ modprobe <module> [opt=val]               // also valid for insmod command
-    > or create /etc/modprobe.d/...             // [see man 5 modprobe.d and ROOT/etc/modprobe.d/]
+    $ modprobe <module> [ opt=val ]             // also valid for insmod command
+    > or create /etc/modprobe.d/...             // [see man 5 modprobe.d and ROOT/etc/modprobe.d/]    [: modprobe.d :]  
     > /sys/module/<module>/parameters/          // if params permissios differ from 0 value

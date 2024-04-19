@@ -1,0 +1,3 @@
+Configuration of system log daemon    [: rsyslog.d :] 
+[see man 8 rsyslogd and man 5 rsyslog.conf]
+[see ROOT/docs/kernel_logs_reading]

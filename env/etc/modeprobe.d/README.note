@@ -1,0 +1,3 @@
+Set configurations for module which is loaded by modprobe    [: modprobe.d :]
+[see man 5 modprobe.d]
+[see ROOT/docs/module_management:4]

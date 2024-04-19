@@ -38,6 +38,8 @@ MODULE_AUTHOR("<name> <email>");
                     - will be modified if less values are passed
                     - will cause error or default value if more values are passed 
         perm:   permissions for /sys/module/<module>/parameters/<name>
+
+    [: modprobe.d :]
 */
 
 

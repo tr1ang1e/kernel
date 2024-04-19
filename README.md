@@ -14,13 +14,23 @@ Kernel version:
     #1642 SMP PREEMPT Mon Apr  3 17:24:16 BST 2023  
 
 
-Special marks:  
-    TODO:   =  come back later  
-    [?]     =  unclear moments or smth to be studied later  
-    [!]     =  important moment  
-    [see]   =  external link  
-    $       =  shell command (sudo is always skipped)  
+How to deal with it:
+    - If parent directory contains README file - read it
+    - If current directory contains README file - read it
+    - If something is still unclear, search in 'docs' dir
 
+
+Special marks. For marks to be higlighted install VSCode extension "Highlight" :
+https://marketplace.visualstudio.com/items?itemName=fabiospampinato.vscode-highlight.
+Highlighting rules are in the .vscode/settings.json file under the "highlight.regexes"
+    TODO:    =  come back later  
+    [?]      =  unclear moments or smth to be studied later  
+    [!]      =  important moment  
+    [see ]   =  external link
+    [:  :]   =  cross reference  
+    $ ...    =  shell command (sudo is always skipped)  
+    >> ...   =  code line
+    
 
 Special names:  
     ROOT    = project root directory

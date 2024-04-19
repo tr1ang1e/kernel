@@ -1,8 +1,8 @@
 
 
-/* --------------------------------------------------------- */
-/*           K E R N E L   B U I L D   S Y S T E M           */
-/* --------------------------------------------------------- */
+# --------------------------------------------------------------------------- #
+#                    K E R N E L   B U I L D   S Y S T E M                    # 
+# --------------------------------------------------------------------------- #    
 
 
 All paths in this section are relative to /lib/modules/`uname -r`/build/
@@ -34,9 +34,9 @@ Read about resursive and non-resursive Make:
     - "Implementing non-recursive make"    http://sites.e-advies.nl/nonrecursive-make.html
 
 
-/* --------------------------------------------------------- */
-/*            K B U I L D   F I L E   B A S I C S            */
-/* --------------------------------------------------------- */
+# --------------------------------------------------------------------------- #
+#                     K B U I L D   F I L E   B A S I C S                     # 
+# --------------------------------------------------------------------------- #   
 
 
                 >> ----------- 6 ----------- <<
@@ -95,9 +95,9 @@ Make to use implicit rules (see further)
 and not absolute path to it. Because sometimes absolute path won't work.
 
 
-/* --------------------------------------------------------- */
-/*              M A K E F I L E   B A S I C S                */
-/* --------------------------------------------------------- */
+# --------------------------------------------------------------------------- #
+#                        M A K E F I L E   B A S I C S                        # 
+# --------------------------------------------------------------------------- #   
 
 
                 >> ----------- 0 ----------- <<
@@ -193,7 +193,7 @@ as long as *.c and *.o names are correlated. Main rules are:
 
 >> clean:
 >>    @rm -f    *.o  .*.cmd  .*.cmd  .*.flags  *.mod.c  *.order .*.*.cmd  *~  *.*~  TODO.*  .*.d
->>	  @rm -rf   .tmp*  *.mod
+>>    @rm -rf   .tmp*  *.mod
 
 This target covers all temporarily build artifacts to be removed automatically
 

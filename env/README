@@ -1,0 +1,13 @@
+This directory is aimed to get examples of configuration
+files which are related to Linux modules development and
+management.
+
+All the examples related to a module named 'ootm'
+
+Every example looks like:
+    example with <placeholders>
+    # explanation of example and placeholders
+
+How to use it:
+    1. replace <placeholders> with appropriate values
+    2. copy file to the system path: ROOT/env/<dir>/ -> /<dir>/
