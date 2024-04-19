@@ -1,0 +1,101 @@
+{
+  "files.associations": 
+  {
+    "*.note": "plaintext"
+  },
+
+  "highlight.regexes": 
+  {
+
+    "(#)( .* )(#)": 
+    {
+      "decorations":
+      [
+        { "color": "#6aa4ad" },
+        { "color": "#6aa4ad" },
+        { "color": "#6aa4ad" }
+      ]
+    },
+
+    "(>>)( .* )(<<)": 
+    {
+      "decorations":
+      [
+        { "color": "#6aa4ad" },
+        { "color": "#6aa4ad" },
+        { "color": "#6aa4ad" }
+      ]
+    },
+
+    "(>> )(.*)": 
+    {
+      "filterFileRegex": ".*\\.note",
+      "decorations":
+      [
+        { "color": "#2e6b28" },
+        { "color": "#98db91" },
+      ]
+    },
+
+    "(\\[:)( .* )(:\\])": 
+    {
+      "decorations":
+      [
+        { "color": "#6aa4ad" },
+        { "color": "#6aa4ad" },
+        { "color": "#6aa4ad" }
+      ]
+    },
+
+    "(0*[0-9]\\. )(.*)": 
+    {
+      "filterFileRegex": ".*\\.note",
+      "decorations":
+      [
+        {
+          "color": "#667ecc",
+          "fontWeight": "bold",
+          "letterSpacing": "0.1px"
+        },
+        {
+          "color": "#667ecc",
+          "fontWeight": "bold",
+          "letterSpacing": "0.1px"
+        },
+      ]
+    },
+
+    "(\\$ )" :
+    {
+      "filterFileRegex": ".*\\.note",
+      "decorations":
+      [
+        {
+          "color": "#2e6b28",
+          "fontWeight": "bold",
+          "letterSpacing": "0.1px"
+        }
+      ]
+    },
+
+    "(\\[)(see)( .*)(\\])": 
+    {
+      "decorations":
+      [
+        { }, { "color": "#a4b038"  },
+        { }, { }
+      ]
+    },
+
+    "(\\[[?!]\\])": 
+    {
+      "decorations":
+      [
+        { 
+          "color": "#d13046",
+          "fontWeight": "bold"
+        }
+      ]
+    },
+  }
+}
