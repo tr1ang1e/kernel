@@ -1,0 +1,27 @@
+[: udev :]  [: device_node :]
+
+
+Example demonstrates:
+
+	This example changes nothing in module source code
+	and just demonstrates another approach of creating
+	device node. Linux subsystem udev will be involved		 
+	
+
+Execute:
+
+	$ cp ./90-ootm.rules /etc/udev/rules.d/		// place rules file to the valid path
+	$ udevadm control --reload-rules			// ask udev to reload all rules
+	$ cd ROOT/src/05/							// use module source code from previous example
+	$ make
+	$ insmod ootm.ko					     	
+	$ ls /dev/ | grep ootm					    // ensure that device nodes were really created
+	$ cat /dev/ootm0			     			// Ok
+	$ cat /dev/ootm1			     			// Ok
+	$ cat /dev/ootm2			     			// Ok
+	$ rmmod ootm								
+	$ ls /dev/ | grep ootm					    // ensure that there are no more device nodes
+	$ make distclean							// remove module itself and other files are left
+	$ cd -
+	$ rm /etc/udev/rules.d/90-ootm.rules
+	$ udevadm control --reload-rules

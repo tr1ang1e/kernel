@@ -42,17 +42,19 @@
 
     - Register driver
 
-	> struct cdev
-	> cdev_init()
-	> cdev_add
+        > struct cdev
+        > cdev_init()
+        > cdev_add
 
     - Set major and minor numbers
 
-	> MAJOR(), MINOR(), MKDEV()
-	> alloc_chrdev_region()
-	> register_chrdev_region()
-	> unregister_chrdev_region()
+        > MAJOR(), MINOR(), MKDEV()
+        > alloc_chrdev_region()
+        > register_chrdev_region()
+        > unregister_chrdev_region()
 
     - Create device node
 
-	> mknod
+	    > mknod
+
+06. UDEV USAGE

@@ -18,3 +18,9 @@ Build system
 
 Man pages essentially useful
     5   proc ............................. pseudo-fs which provides interface to kernel data structures
+
+
+Tutorials
+    Linux device drivers ................. https://embetronicx.com/linux-device-driver-tutorials/
+    RTOS ................................. https://embetronicx.com/rtos/
+    

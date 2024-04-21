@@ -12,7 +12,6 @@
     $ nm <module>.ko                            // lists all file symbols [see man 1 nm]
     $ lsmod | grep <module>                     // show the status of module in the kernel
 
-
 2. Management
 
     A. Without checking dependencies
@@ -23,13 +22,13 @@
         $ cp <module>.ko /lib/modules/KDIR/...  // choose mostly valid nested directory  
         $ depmod -a                             // update dependencies [see man 8 depmod]
         > check /lib/modules/KDIR/modules.dep   // contatins info of module and dependencies required by modprobe
-        $ modprobe <module>                     // insert a module into the kernel after insertion all dependencies
+        $ modprobe <module>                     // insert a module into the kernel after insertion all dependencies    [: module_name :]
 
     C. Autoload: static, while boot
         > do step B.                            // autoload is modprobe related feature 
         > create /etc/modules-load.d/...        // [see man 8 systemd-modules-load.service and man 5 modules-load.d and ROOT/etc/modules-load.d/]    [: modules-load.d :]
 
-    D. Autoload: dynamic                        // when udev event happens, according to the rule [see man 7 udev]    [: udev :]
+    D. Autoload: dynamic if smth happened      // when uevent happens, according to the rule [see man 7 udev]     [: udev :]
 
 
 3. Blacklist 

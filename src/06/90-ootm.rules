@@ -1,0 +1,7 @@
+# How can I know which values should I use?
+#   SUBSYSTEM, DEVPATH: run `udevadm monitor -p` and load module
+#   ACTION: values are predefined, see man
+#   RUN: any executable command might be used
+
+SUBSYSTEM=="module",    ACTION=="add",       DEVPATH=="/module/ootm",    RUN+="/root/kernel/src/06/create_ootm_device_nodes.sh"
+SUBSYSTEM=="module",    ACTION=="remove",    DEVPATH=="/module/ootm",    RUN+="/bin/bash -c 'rm /dev/ootm*'"

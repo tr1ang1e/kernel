@@ -1,9 +1,12 @@
 Example demonstrates:
 
-	-
+	...
+	...
+	...
+
 
 Execute:
 
 	$ make
-	$
-
+	$ 
+	$ make distclean

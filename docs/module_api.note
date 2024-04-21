@@ -19,7 +19,7 @@
 
 
 4. Files:
-        /proc/...    pseudofiles; data is always in symbollic format, not binary
+        /proc/...    pseudofiles; data is always in symbolic format, not binary
         /sys/....    modern interface similar to /proc/
 
 
@@ -90,6 +90,11 @@ Approaches to set dev_t <complex_value> and register it:
 >> register_chrdev_region(dev, <device_first>, <device_count>, <device_name>);    // variant 2: manually 
 >> unregister_chrdev_region(dev, <device_count>);				  // at the module work end unregister is necessary
 
+[!] Don't confuse module name, device name and device node
+[!]     [: module_name :]  -  is used in Makefile and for module management (modprobe, rmmod, udev DEVPATH, ...)
+[!]     [: device_name :]  -  is name which will be used to register in /proc/devices and appear in uevents
+[!]     [: device_node :]  -  is file which will linked against device major and minor values in /dev/
+
 After it we should choose approach of how will 
 device with registered major and minor values be 
 linked against /dev/<device> filename:
@@ -98,7 +103,7 @@ linked against /dev/<device> filename:
         - automatically         sytemd daemon 'udev'                    [see man 7 udev]
         - automatically         class_create() + device_create()        [see https://www.kernel.org/doc/html/latest/driver-api/infrastructure.html]
 
-And finally When module is linked against device name in /dev/<device>, 
+And finally When module is linked against device node in /dev/<device>, 
 such a module is named and considered as DEVICE DRIVER. Device unlinking
 must be also done via the same mechanism as it was linked.
 
@@ -112,18 +117,64 @@ example, node might be created in the directory of module compilation.
         
                 > load module (insmod or modprobe)
                 $ lsmod | grep <module>.ko                      // check if module is loaded
-                $ cat /proc/devices | grep <device_name>        // check if module is registered as device
-                $ mknod -m006 /dev/<device> c <major> <minor>   // link registered device against /dev/<device>
+                $ cat /proc/devices | grep <device_name>        // check if module is registered as device         [: device_name :]
+                $ mknod -m006 /dev/<device> c <major> <minor>   // link registered device against /dev/<device>    [: device_node :]
 
         Device removal must be performed in reverse order:
 
                 $ rm /dev/<device>                              // unlink registered device from /dev/<device>
                 > remove module (rmmod or modprobe)
 
-2. Automatically: udev    [: udev :]
+
+2. Automatically: udev
+
+        Udev is Linux-specific subsystem which handle device events:
+        [see man 7 udev]
+                - udev events are usually called 'uevents'
+                - uevents are sent directly by kernel
+                - triggers are: add device + remove device + device changes state
+        
+        Uenents are received via the Linux-specific AF_NETLINK protocol socket:
+        [see man 8 systemd-udevd.service]
+                - socket(AF_NETLINK, SOCK_DGRAM, NETLINK_KOBJECT_UEVENT);
+                - uevents are sent by kernel in broadcast mode
+                - udevd daemon when running is one of possible receivers
+
+        Udevd workflow:
+        [: udev :]
+                - receive event
+                - look through *.rules files to match event info against rules
+                - proceed rule which was found:  
+                        step 1  =  check if rule suits (operators ==, !=)
+                        step 2  =  if rule suits proceed assignment (operators =, +=, :=)
+                        step 3  =  proceed operations related to assignments from step 2
+                $ cat /usr/lib/udev/rules.d/50-udev-default.rules   // rules references
+
+        [!] actual workflow is little bit more sophisticated because rules might override each 
+            other so read manual pages before implementing complicated logic if its neseccary
+        
+        Managing device:
+        [: device_node :]
+                step 1  =  create file with rules: <priority>-<filename>.rules
+                        to create device node, use script (which creats nodes) and  >> RUN+="<script>.sh" 
+                        to create symlink to device node, use  >> SYMLINK+="<linkname>"
+                step 2  =  place it to one of the valid paths, e.g.: /etc/udev/rules.d/
+                step 3  =  $ systemctl restart udev  or  $ udevadm control --reload-rules
+                step 4  =  load or remove module
+
+        Observe or manage udev work is possible using udevadm:
+        [see man 8 udevadm]
+                $ udevadm monitor --property                // watch uevents in real time
+                $ udevadm control --log-priority=debug      // get more log info, use `journalctl -xe`
+                $ udevadm control --reload-rules            // apply *.rules changes without restarting
+                $ udevadm info -q=all -p=<DEVPATH>          // get all info about loaded device
 
 
 3. Automatically: class_create() + device_create()
+
+        ...
+        ...
+        ...
 
         
 # --------------------------------------------------------------------------- #

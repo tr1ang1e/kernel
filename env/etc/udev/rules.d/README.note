@@ -1,0 +1,13 @@
+Udev daemon rules   [: udev :]
+[see man 7 udev]
+[see DOCS/module_api.note:(2):2]
+
+
+File naming:
+
+    1. Extension 
+    Rules file must have .rules extension Otherwise the file will be ignored
+
+    2. Leading number
+    Udev handle files in order they appear in directory. So as rules might
+    overlap and rewrite each other, leading number affect rules priority

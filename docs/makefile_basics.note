@@ -67,12 +67,12 @@ automatically as <module_name_*>.c
 When <module_name_*>.o compiled from sources it is linked 
 against kernel symbols and is transformed to the module:
     file = <module_name_*>.ko
-    name = <module_name_*>
+    name = <module_name_*>          [: module_name :]
 
 If one of module is dependency (export symbols) for other,
 it's important to build them together, because the export
 symbols will not appear in kernel ./Module.symvers but only
-in current build directory ./Module.symvers and Therefore
+in current build directory ./Module.symvers and therefore
 Make will not see them
 
 

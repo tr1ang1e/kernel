@@ -1,0 +1,24 @@
+Example demonstrates:
+
+	- register device approach using 'struct cdev'
+	- manual and auto device major and minor number assigning
+	- implementing file operations 'read' function
+
+
+Execute:
+
+	$ make
+	$ insmod ootm.ko [major=<value>]	     	// load module [set major manually or auto]
+	$ cat /sys/module/ootm/parameters/major	    // get actual major number
+	$ cat /proc/devices | grep DEVICE_NAME      // check if module is registered as device with same major
+	$ mknod -m006 /dev/ootm0 c <major> 0        // create device node for major=<major> minor=0  [see man 1 mknod]
+	$ mknod -m006 /dev/ootm1 c <major> 1        // create device node for major=<major> minor=1 
+	$ mknod -m006 /dev/ootm2 c <major> 2        // create device node for major=<major> minor=2
+	$ mknod -m006 /dev/ootm3 c <major> 3        // create device node for major=<major> minor=3  [!] no error, but see further
+	$ cat /dev/ootm0			     			// Ok
+	$ cat /dev/ootm1			     			// Ok
+	$ cat /dev/ootm2			     			// Ok
+	$ cat /dev/ootm3			     			// [!] error: only 3 minor numbers are registered
+	$ rm /dev/ootm*				     			// destroy device nodes
+	$ rmmod ootm				     			// unload module
+	$ make distclean							// remove module itself and other files are left

@@ -1,0 +1,9 @@
+<KEY_1>=="<compare_value>", <KEY_2>="<assign_value>"
+# udev rule pattern
+# Keys:
+#   <KEY_*>     one of predefined udev constants
+#   <*_value>   user-defined values which affect udev behavior
+# Operations:
+#   ==, !=      comparison: rule will be applied if all such operations return 'true'
+#   =, +=, :=   assignment: if rule is applied corresponding values are assigned and 
+#                           thus will affect further udev behavior
