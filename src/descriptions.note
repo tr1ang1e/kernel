@@ -53,8 +53,16 @@
         > register_chrdev_region()
         > unregister_chrdev_region()
 
-    - Create device node
+    - Create device node manually
 
 	    > mknod
 
-06. UDEV USAGE
+06. UDEV USAGE (create device node)
+
+07. CREATE DEVICE NODE
+
+    - Create device node automatically
+
+        > struct class *
+        > class_create(), class_destroy()
+        > device_create(), device_destroy()

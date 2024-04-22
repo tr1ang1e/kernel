@@ -15,3 +15,9 @@ _. (Device driver + device tree) vs. (Module)
     struct platform_driver = https://www.kernel.org/doc/Documentation/driver-model/platform.txt
     faq = https://stackoverflow.com/questions/64861848/how-to-use-a-linux-platform-driver
     faq = https://stackoverflow.com/questions/26840267/driver-code-in-kernel-module-doesnt-execute
+
+_. Sysfs
+
+    How to create sysfiles correctly = http://www.kroah.com/log/blog/2013/06/26/how-to-create-a-sysfs-file-correctly/
+    React to module sysfiles changing = https://stackoverflow.com/questions/11063719/kernel-modules-parameters-in-sysfs-quick-reaction-for-changes
+    

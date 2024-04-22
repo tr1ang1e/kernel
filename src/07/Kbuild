@@ -1,0 +1,26 @@
+# required paths
+ROOT := ${PWD}/../../
+SRCS := ${ROOT}/src/
+COMMON := ${SRCS}/common/
+
+
+# extra compilation flags
+ccflags-y :=  -std=gnu11  --no-warnings  -I${SRCS}
+asflags-y :=
+ldflags-y :=
+
+
+# targfet modules names
+MODULE_OOTM := ootm
+
+
+# target modules
+TARGET_MODULES := ${MODULE_OOTM}.o
+obj-m := ${TARGET_MODULES}
+
+
+# target modules source object files
+MODULE_OOTM_OBJS := ootm_main.o
+MODULE_OOTM_OBJS += ../common/fops/read/read.o
+MODULE_OOTM_OBJS += ../common/fops/open/open.o
+ootm-y := ${MODULE_OOTM_OBJS}

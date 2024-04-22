@@ -50,10 +50,10 @@ Available approaches:
 1. Using 'struct cdev' [see <linux/cdev.h>]
 
         >> static struct file_operations fops = { ... };		// file operations
-        >> static struct cdev hcdev = { 0 };				// cdev handler
+        >> static struct cdev hcdev = { 0 };				// character device handler
     	>> cdev_init(&hcdev, &fops);					// always success
     	>> hcdev.owner = THIS_MODULE;					// 
-	>> int ret = cdev_add(&hcdev, MKDEV(...), DEVICE_COUNT);	// negative ret is error
+	>> int ret = cdev_add(&hcdev, MKDEV(...), DEVICE_COUNT);	// negative ret means error
 
 2. Misc drivers (miscellaneous)
 
@@ -75,7 +75,9 @@ Available approaches:
 
 /dev/<device> is linked against particular module via combination of:
         - major number = device class
-        - minor number = concrete device class instance
+        - minor number = concrete device class instance. For every minor 
+                         number one device node might be created and used as 
+                         a separate device of device class (major number).
 
 >> #include <linux/types.h>
 >> #include <linux/kdev_t.h>
@@ -91,9 +93,9 @@ Approaches to set dev_t <complex_value> and register it:
 >> unregister_chrdev_region(dev, <device_count>);				  // at the module work end unregister is necessary
 
 [!] Don't confuse module name, device name and device node
-[!]     [: module_name :]  -  is used in Makefile and for module management (modprobe, rmmod, udev DEVPATH, ...)
-[!]     [: device_name :]  -  is name which will be used to register in /proc/devices and appear in uevents
-[!]     [: device_node :]  -  is file which will linked against device major and minor values in /dev/
+[!]     [: module_name :]  -  /proc/modules - is used in Makefile and for module management (modprobe, rmmod, udev DEVPATH, ...)
+[!]     [: device_name :]  -  /proc/devices - is name which will be used to register in and appear in uevents
+[!]     [: device_node :]  -  /dev/... - is file which will linked against device major and minor values
 
 After it we should choose approach of how will 
 device with registered major and minor values be 
@@ -170,11 +172,13 @@ example, node might be created in the directory of module compilation.
                 $ udevadm info -q=all -p=<DEVPATH>          // get all info about loaded device
 
 
-3. Automatically: class_create() + device_create()
+3. Automatically: class_create() + device_create()    [: device_class :]
 
-        ...
-        ...
-        ...
+        Device nodes might be created from inside source code.
+        The kernel API for that:
+                - struct class *                            // device class handler
+                - class_create(), class_destroy()           // manage device class
+                - device_create(), device_destroy()         // manage device class instances
 
         
 # --------------------------------------------------------------------------- #

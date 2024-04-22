@@ -1,0 +1,24 @@
+[: device_class :]
+
+
+Example demonstrates:
+
+	- the same as ROOT/src/05/
+	- automatically device nodes creation 
+
+Execute:
+
+	$ make
+	$ insmod ootm.ko [major=<value>]	     	// load module [set major manually or auto]
+	$ cat /proc/modules | grep MODULE_NAME		// check if module is loaded
+	$ cat /proc/devices | grep DEVICE_NAME      // check if module is registered as device with same major
+	$ ls /sys/class/ | grep DEVICE_CLASS_NAME	// check if device class is created
+	$ ls /sys/class/DEVICE_CLASS_NAME			// check if class instances are created
+	$ ls /dev/ | grep ootm					    
+	$ cat /dev/ootm_0			     			// Ok
+	$ cat /dev/ootm_1			     			// Ok
+	$ cat /dev/ootm_2			     			// Ok
+	$ rmmod ootm
+	$ ls /dev/ | grep ootm					    // ensure that there are no more device nodes
+	$ ls /sys/class/ | grep DEVICE_CLASS_NAME	// ensure that device class is destroyed
+	$ make distclean							// remove module itself and other files are left

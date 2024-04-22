@@ -3,6 +3,7 @@ All cross references list:
     [: module_name :]
     [: device_name :]
     [: device_node :]
+    [: device_class :]
 
     [: modprobe.d :] 
     [: modules-load.d :]
