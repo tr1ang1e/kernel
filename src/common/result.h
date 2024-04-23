@@ -6,15 +6,10 @@
 #include <linux/types.h>
 
 
-// Probably not the best value
-// but for now let it be so
-#define ERROR_OK   0
-
-
 // [?] In newer kernel versions as well as in old answers on the Internet
 // the assumption that Linux required sizeof(void*) == sizeof(long) is made. 
 // I have ve failed to find any official doc specfying it. But nevertheless
-typedef long       intptr_t;
+typedef long    intptr_t;
 
 
 // Type is used to simplify handling error codes when return value
@@ -28,8 +23,9 @@ typedef struct
 {
     // intptr is suitable for storing both pointer and signed values. As 
     // errors in linux kernel are always less than zero, intptr_t is used
-    intptr_t       error;
-    const char*    what;    // possibility to return string representation
+    bool           error;      // indicates if error occured
+    intptr_t       result;     // return code
+    const char*    message;    // possibility to return message
     
     // To avoid type conversions, it is better 
     // to store result values in the exact type

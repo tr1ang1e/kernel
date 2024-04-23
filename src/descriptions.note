@@ -68,3 +68,8 @@
         > device_create(), device_destroy()
 
     - Generic result type usage
+
+    - Handle errors when return type is pointer
+
+        > IS_ERR()
+        > PTR_ERR()
