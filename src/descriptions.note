@@ -66,3 +66,5 @@
         > struct class *
         > class_create(), class_destroy()
         > device_create(), device_destroy()
+
+    - Generic result type usage
