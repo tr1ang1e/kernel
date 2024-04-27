@@ -3,7 +3,8 @@
   {
     "*.note": "plaintext",
     "device.h": "c",
-    "open.h": "c"
+    "open.h": "c",
+    "headers.h": "c"
   },
 
   "highlight.regexes": 

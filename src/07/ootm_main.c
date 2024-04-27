@@ -2,12 +2,7 @@
 #include <linux/device.h>
 #include <linux/err.h>
 #include <linux/init.h>
-#include <common/author.h>
-#include <common/macros.h>
-#include <common/device/device.h>
-#include <common/fops/open/open.h>
-#include <common/fops/read/read.h>
-#include <common/result.h>
+#include <common/headers.h>
 
 
 /* --------------------------------------------------------- */

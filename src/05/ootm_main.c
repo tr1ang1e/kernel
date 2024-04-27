@@ -1,9 +1,6 @@
 #include <linux/cdev.h>
 #include <linux/init.h>
-#include <common/author.h>
-#include <common/macros.h>
-#include <common/fops/open/open.h>
-#include <common/fops/read/read.h>
+#include <common/headers.h>
 
 
 /* --------------------------------------------------------- */
