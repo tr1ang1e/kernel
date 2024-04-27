@@ -1,0 +1,14 @@
+# How can I know which values should I use?
+#   SUBSYSTEM, KERNEL: run `udevadm monitor -p` and load module
+#   ACTION: values are predefined, see man
+#   SYMLINK: any path relative to /dev/. If the name contains dir it will be created automatically
+#            SYMLINK+="ootm"        =>   /dev/ootm
+#            SYMLINK+="dir/ootm"    =>   /dev/dir/ootm
+#
+# To get KERNEL= valid value see kernel uevent and use as follows:
+#   Kernel uevent:   DEVNAME=/dev/ootm_2
+#   Udev rule file:  KERNEL="ootm_2"
+
+
+# Created symlink will be automatically removed when removing corresponding device and therefore no remove rule is required
+SUBSYSTEM=="ootm_cdev_class",   ACTION=="add",   KERNEL=="ootm_2",   SYMLINK+="ootm"

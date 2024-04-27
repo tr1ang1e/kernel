@@ -1,0 +1,27 @@
+[: udev :]  [: device_node :]
+
+
+Example demonstrates:
+
+	This example changes nothing in module source code
+	and just demonstrates how might symlinks to device
+	nodes be created. It's useful for keeping stable device 
+	nodes name using link to device node name which was 
+	changed (due to new version, connection order, etc...).		 
+	
+
+Execute:
+
+	$ cp ./90-ootm.rules /etc/udev/rules.d/		// place rules file to the valid path
+	$ udevadm control --reload-rules			// ask udev to reload all rules
+	$ cd ROOT/src/07/							// use module source code from previous example
+	$ make
+	$ insmod ootm.ko
+	$ ls -l /dev/ | grep ^l | grep ootm		    // ensure that link to one of device nodes exists
+	$ cat /dev/ootm			     				// Ok
+	$ rmmod ootm								
+	$ ls /dev/ | grep ootm					    // ensure that there are no more device nodes nor link
+	$ make distclean							// remove module itself and other files are left
+	$ cd -
+	$ rm /etc/udev/rules.d/90-ootm.rules
+	$ udevadm control --reload-rules

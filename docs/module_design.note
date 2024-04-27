@@ -1,32 +1,5 @@
 
 # --------------------------------------------------------------------------- #
-#                    M O D U L E   A P I   F O R   U S E R                    # 
-# --------------------------------------------------------------------------- #
-
-
-1. Log system: see doc about reading kernel logs
-
-
-2. Data exchange system calls:  
-   $ cat /proc/kallsyms | grep T | grep <symbol> 
-        symbol:     'copy_to_user' or 'copy_from_user'
-        header:      /lib/modules/`uname -r`/build/include/asm-generic/uaccess.h 
-        comment:     interrupt-ctx-forbidden (disk operations if user memory page not in RAM)
-
-
-3. Symbol devices names: /dev/<name>
-   Module must implement interface: open(), read(), close(), write()
-
-
-4. Files:
-        /proc/...    pseudofiles; data is always in symbolic format, not binary
-        /sys/....    modern interface similar to /proc/
-
-
-5. Net interfaces: create new or modify existent
-
-
-# --------------------------------------------------------------------------- #
 #                           M O D U L E   D E S I G N                         # 
 # --------------------------------------------------------------------------- #
 
@@ -37,7 +10,7 @@ Three key points:
 
         (2) How to create new /dev/ name and link it with major/minor device number
 
-        (3) How to implement required API (open, close, ...)
+        (3) How to implement required API for user
 
 
 # --------------------------------------------------------------------------- #
@@ -186,22 +159,48 @@ example, node might be created in the directory of module compilation.
 # --------------------------------------------------------------------------- #
 
 
-Almost all useful work is done using structures:
+1. Log system: see doc about reading kernel logs
 
->> #include <linux/fs.h>
->> struct file_operations = { ... };
->> struct inode_operations = { ... };
 
-If handler function is specified it will be called for corresponding
-operation. Otherwise either DAFAULT HANDLER will be called or specific
-error 'not implemented yet' will be returned
+2. Data exchange system calls:  
+   $ cat /proc/kallsyms | grep T | grep <symbol> 
+        symbol:     'copy_to_user' or 'copy_from_user'
+        header:      /lib/modules/`uname -r`/build/include/asm-generic/uaccess.h 
+        comment:     interrupt-ctx-forbidden (disk operations if user memory page not in RAM)
 
-Handler prototypes are mostly of the following template:
 
-        file_operations   =  <type> (*<name>) (struct file *, <args>);
-        inode_operations  =  <type> (*<name>) (struct inode *, <args>);
+3. Using symbol devices names and filesystem interface
 
-[!] The 'struct file *' argument is associated with particulatr file
-    descriptor and therefore might differ from call to call as several
-    file descriptors are allowed for the same device and all of them
-    are unique. But 'struct inode *' is always the same as it's unique
+        /dev/<name>  =  the most common way to communicate with module when
+                        we should represent module as a regular file. This
+                        file is not a real file (called 'pseudofile'). But
+                        must provide a set of filesystem specific operations
+                        and metadate structures for OS to consider it as file.
+
+        Almost all useful work is done using structures:
+
+        >> #include <linux/fs.h>
+        >> struct file_operations = { ... };
+        >> struct inode_operations = { ... };
+
+        If handler function is specified it will be called for corresponding
+        operation. Otherwise either DAFAULT HANDLER will be called or specific
+        error 'not implemented yet' will be returned
+
+        Handler prototypes are mostly of the following template:
+
+                file_operations   =  <type> (*<name>) (struct file *, <args>);          [: fops :]
+                inode_operations  =  <type> (*<name>) (struct inode *, <args>);
+
+        [!] The 'struct file *' argument is associated with particulatr file
+        descriptor and therefore might differ from call to call as several
+        file descriptors are allowed for the same device and all of them
+        are unique. But 'struct inode *' is always the same as it's unique
+
+4. Files:
+
+        /proc/...    pseudofiles; data is always in symbolic format, not binary
+        /sys/....    modern interface similar to /proc/
+
+
+5. Net interfaces: create new or modify existent

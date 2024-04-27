@@ -73,3 +73,5 @@
 
         > IS_ERR()
         > PTR_ERR()
+
+08. UDEV USAGE (create symlink to existent device node)
