@@ -27,7 +27,7 @@ Highlighting rules are in the .vscode/settings.json file under the "highlight.re
 &nbsp;&nbsp;&nbsp;&nbsp;[?]      =  unclear moments or smth to be studied later  
 &nbsp;&nbsp;&nbsp;&nbsp;[!]      =  important moment  
 &nbsp;&nbsp;&nbsp;&nbsp;[see ]   =  external link  
-&nbsp;&nbsp;&nbsp;&nbsp;[:  :]   =  cross reference (for full list see docs/crossrefs.note)
+&nbsp;&nbsp;&nbsp;&nbsp;[:  :]   =  cross reference (for full list see docs/crossrefs.note)  
 &nbsp;&nbsp;&nbsp;&nbsp;$ ...    =  shell command (sudo is always skipped)  
 &nbsp;&nbsp;&nbsp;&nbsp;>> ...   =  code line  
     
@@ -35,7 +35,10 @@ Highlighting rules are in the .vscode/settings.json file under the "highlight.re
 Special names:  
 &nbsp;&nbsp;&nbsp;&nbsp;ROOT    = project root directory  
 &nbsp;&nbsp;&nbsp;&nbsp;DOCS    = ROOT/docs/  
-&nbsp;&nbsp;&nbsp;&nbsp;KDIR    = /lib/modules/`uname -r`/  directory
+&nbsp;&nbsp;&nbsp;&nbsp;KDIR    = /lib/modules/`uname -r`/  directory  
+
+
+Functions naming:   ootm_<module>_<name>
 
 
 Techonologies to be involved later  

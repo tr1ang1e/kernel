@@ -11,6 +11,7 @@
 /* --------------------------------------------------------- */
 
 
+#define MODULE_NAME     "ootm"
 #define DEVICE_NAME     MODULE_NAME "_cdev"
 #define DEVICE_FIRST    0
 #define DEVICE_COUNT    3

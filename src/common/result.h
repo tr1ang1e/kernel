@@ -18,7 +18,7 @@ typedef long    intptr_t;
 // It also might be used in call "chains", when meaningful output value 
 // of previous function call should be passed as input value into the
 // following function call. In this case no need to retreive this value,
-// as it might be passed inside this type instance. 
+// as it might be passed inside this type instance. But not recommended.
 typedef struct
 {
     // intptr is suitable for storing both pointer and signed values. As 

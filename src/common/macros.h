@@ -3,23 +3,17 @@
 
 
 /* --------------------------------------------------------- */
-/*                        M O D U L E                        */
-/* --------------------------------------------------------- */
-
-
-#define MODULE_NAME     "ootm"
-
-#define GREETING()      printk("Hello from " MODULE_NAME "!\n");
-#define FAREWELL()      printk("Goodbuy from " MODULE_NAME "!\n");
-
-
-/* --------------------------------------------------------- */
 /*                         D E B U G                         */
 /* --------------------------------------------------------- */
 
 
 // final value is computed in run-time
 #define FILENAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+
+// init and exit module trace messages
+#define GREETING()      printk("Hello from " MODULE_NAME "!\n");
+#define FAREWELL()      printk("Goodbuy from " MODULE_NAME "!\n");
 
 
 /* --------------------------------------------------------- */

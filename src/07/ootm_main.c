@@ -4,21 +4,10 @@
 #include <linux/init.h>
 #include <common/author.h>
 #include <common/macros.h>
+#include <common/device/device.h>
 #include <common/fops/open/open.h>
 #include <common/fops/read/read.h>
 #include <common/result.h>
-
-
-/* --------------------------------------------------------- */
-/*                        M A C R O S                        */
-/* --------------------------------------------------------- */
-
-
-#define DEVICE_NAME             MODULE_NAME "_cdev"
-#define DEVICE_CLASS_NAME       DEVICE_NAME "_class"
-#define DEVICE_INSTANCE_NAME    MODULE_NAME
-#define DEVICE_MINOR_FIRST      0
-#define DEVICE_MINOR_COUNT      3
 
 
 /* --------------------------------------------------------- */
@@ -48,14 +37,14 @@ static struct cdev hcdev = { 0 };           // char device instance
 /* --------------------------------------------------------- */
 
 
-static  void  ootm_create_cdev_region(ootm_result *result);
-static  void  ootm_destroy_cdev_region(dev_t dev);
+static  void  ootm_dev_create_cdev_region(ootm_result *result);                 // Create character device region: custom or auto
+static  void  ootm_dev_destroy_cdev_region(dev_t dev, int minor_count);         // Destriy character device region
 
-static  void  ootm_add_cdev(ootm_result *result);
-static  void  ootm_delete_cdev();
+static  void  ootm_dev_add_cdev(dev_t dev, ootm_result *result);                // Initialize and add character device
+static  void  ootm_dev_delete_cdev();                                           // Delete character device
 
-static  void  ootm_create_device_nodes(ootm_result *result);
-static  void  ootm_destroy_device_nodes();
+static  void  ootm_dev_create_device_nodes(dev_t dev, ootm_result *result);     // Create device class and it's instances
+static  void  ootm_dev_destroy_device_nodes(dev_t dev);                         // Destriy device class and it's instances
 
 
 /* --------------------------------------------------------- */
@@ -72,7 +61,7 @@ ootm_main_init(void)
     dev_t          dev = 0;
     ootm_result    result = { 0 };
 
-    ootm_create_cdev_region(&result);
+    ootm_dev_create_cdev_region(&result);
     if (result.error) 
     {
         printk(KERN_ERR "Error: %s\n", result.message);
@@ -81,16 +70,19 @@ ootm_main_init(void)
 
     // keep global data which no longer will be changed
     dev = result.value_dev_t;
+    ootm_dev_keep_dev(dev);
+
+    // keep module parameter value
     major = MAJOR(dev);
 
-    ootm_add_cdev(&result);
+    ootm_dev_add_cdev(dev, &result);
     if (result.error)
     {
         printk(KERN_ERR "Error: %s\n", result.message);
         goto destroy_cdev_region;
     }
 
-    ootm_create_device_nodes(&result);
+    ootm_dev_create_device_nodes(dev, &result);
     if (result.error)
     {
         printk(KERN_ERR "Error: %s\n", result.message);
@@ -110,11 +102,11 @@ ootm_main_init(void)
 
 delete_cdev:
 
-    ootm_delete_cdev();
+    ootm_dev_delete_cdev();
 
 destroy_cdev_region:
 
-    ootm_destroy_cdev_region(dev);
+    ootm_dev_destroy_cdev_region(dev, DEVICE_MINOR_COUNT);
 
 
 // Exit point
@@ -138,11 +130,11 @@ ootm_main_exit(void)
     //      delete char device handler
     //      destroy character device region
 
-    ootm_destroy_device_nodes();
+    ootm_dev_destroy_device_nodes(ootm_dev_peek_dev());
     
-    ootm_delete_cdev();
+    ootm_dev_delete_cdev();
 
-    ootm_destroy_cdev_region(MKDEV(major, DEVICE_MINOR_FIRST));
+    ootm_dev_destroy_cdev_region(ootm_dev_peek_dev(), DEVICE_MINOR_COUNT);
     
     return;
 }
@@ -158,17 +150,8 @@ module_exit(ootm_main_exit);
 
 
 static void   
-ootm_create_cdev_region(ootm_result *result)
-{
-    /*
-        Create character device region: custom or auto
-
-        [out]  ootm_result::value_dev_t     created device (major + DEVICE_MINOR_FIRST) if success
-        [out]  ootm_result::error
-        [out]  ootm_result::result
-        [out]  ootm_result::message
-    */
-    
+ootm_dev_create_cdev_region(ootm_result *result)
+{   
     int      ret = 0; 
     dev_t    dev = 0;
 
@@ -204,27 +187,18 @@ ootm_create_cdev_region(ootm_result *result)
 
 
 static void
-ootm_destroy_cdev_region(dev_t dev)
+ootm_dev_destroy_cdev_region(dev_t dev, int minor_count)
 {
-    unregister_chrdev_region(dev, DEVICE_MINOR_COUNT);
+    unregister_chrdev_region(dev, minor_count);
 
     return;
 }
 
 
 static void 
-ootm_add_cdev(ootm_result *result)
+ootm_dev_add_cdev(dev_t dev, ootm_result *result)
 {  
-    /*
-        Initialize and add character device
-
-        [in]   ootm_result::value_dev_t     device to be initialized
-        [out]  ootm_result::error
-        [out]  ootm_result::result
-        [out]  ootm_result::message
-    */
-
-   int ret = 0;
+    int ret = 0;
 
     // initialize char device handler
     cdev_init(&hcdev, &fops);
@@ -232,7 +206,7 @@ ootm_add_cdev(ootm_result *result)
 
     // register device with given (major + initial minor) combination
     // and specify how much minor numbers are available for device
-    ret = cdev_add(&hcdev, result->value_dev_t, DEVICE_MINOR_COUNT);
+    ret = cdev_add(&hcdev, dev, DEVICE_MINOR_COUNT);
 
     if (unlikely(ret < 0))
     {
@@ -250,29 +224,21 @@ ootm_add_cdev(ootm_result *result)
 
 
 static void  
-ootm_delete_cdev()
+ootm_dev_delete_cdev()
 {
     cdev_del(&hcdev);
 }
 
 
 static void 
-ootm_create_device_nodes(ootm_result *result)
+ootm_dev_create_device_nodes(dev_t dev, ootm_result *result)
 {
-    /*
-        Create device class and it's instances
-
-        [out]  ootm_result::error
-        [out]  ootm_result::result
-        [out]  ootm_result::message
-    */
-
     result->error = false;
     
+    int               major = MAJOR(dev);
     int               minor = DEVICE_MINOR_FIRST; 
-    dev_t             dev = 0;
     struct device    *instance = NULL;
-
+    
     // Create device class itself
     devclass = class_create(THIS_MODULE, DEVICE_CLASS_NAME);
     if (unlikely(IS_ERR(devclass)))
@@ -287,10 +253,9 @@ ootm_create_device_nodes(ootm_result *result)
     // Corresponding device nodes will be created automatically
     for ( ; minor < DEVICE_MINOR_COUNT; ++minor)
     {
-        dev = MKDEV(major, minor);
         instance = device_create (devclass, 
                                   NULL, 
-                                  dev, 
+                                  MKDEV(major, minor), 
                                   NULL,
                                  "%s_%d", DEVICE_INSTANCE_NAME, minor   // device node name = /dev/"%s_%d" 
         );
@@ -322,8 +287,10 @@ exit:
 
 
 static void 
-ootm_destroy_device_nodes()
+ootm_dev_destroy_device_nodes(dev_t dev)
 {
+    int major = MAJOR(dev);
+    
     for (int minor = DEVICE_MINOR_FIRST; minor < DEVICE_MINOR_COUNT; ++minor)
     {
         device_destroy(devclass, MKDEV(major, minor));

@@ -1,0 +1,11 @@
+Device value is created while creating crdev region using either:
+    - register_chrdev_region()
+    - alloc_chrdev_region()
+
+While this operations 3 values are set and never might be changed
+    - device major number
+    - device minor number
+    - minor numbers count
+
+This interface is used to store these values not in global scope
+and to provide convinient API to save and retreive them.
