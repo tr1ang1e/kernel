@@ -2,9 +2,9 @@ KDIR ?= /lib/modules/`uname -r`/build/
 
 
 OBJS := 
-OBJS += device/device.o
-OBJS += fops/open/open.o
-OBJS += fops/read/read.o
+OBJS += src/device/device.o
+OBJS += src/fops/open/open.o
+OBJS += src/fops/read/read.o
 
 
 all: _shipped/common_bin.o_shipped clean
@@ -16,16 +16,16 @@ _shipped/common_bin.o_shipped: ${OBJS}
 	mv common_bin.o_shipped _shipped/
 
 
-device/device.o:
-	make -C ${KDIR} M=`pwd` device/device.o
+src/device/device.o:
+	make -C ${KDIR} M=`pwd` src/device/device.o
 
 
-fops/open/open.o:
-	make -C ${KDIR} M=`pwd` fops/open/open.o
+src/fops/open/open.o:
+	make -C ${KDIR} M=`pwd` src/fops/open/open.o
 
 
-fops/read/read.o:
-	make -C ${KDIR} M=`pwd` fops/read/read.o
+src/fops/read/read.o:
+	make -C ${KDIR} M=`pwd` src/fops/read/read.o
 
 
 clean:
@@ -33,5 +33,5 @@ clean:
 
 
 distclean: 
-	@rm -f   */*.o  */*/*.o
+	@rm -f   */*.o  */*/*.o  */*/*/*.o
 	@rm -rf  ./_shipped/

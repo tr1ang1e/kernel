@@ -1,6 +1,6 @@
 #include <linux/cdev.h>
 #include <linux/init.h>
-#include <common/headers.h>
+#include <common/include/headers.h>
 
 
 /* --------------------------------------------------------- */
