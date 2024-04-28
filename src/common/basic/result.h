@@ -6,6 +6,18 @@
 #include <linux/types.h>
 
 
+/* --------------------------------------------------------- */
+/*                        T Y P E S                          */
+/* --------------------------------------------------------- */
+
+
+typedef enum
+{
+    ERR_OK = 0,             // must always be zero, so that cast to bool equals 'false'
+    ERR_KERN_CALL,          // error in call of kernel api. Additional info might be required
+} ootm_error;
+
+
 // [?] In newer kernel versions as well as in old answers on the Internet
 // the assumption that Linux required sizeof(void*) == sizeof(long) is made. 
 // I have ve failed to find any official doc specfying it. But nevertheless
@@ -23,7 +35,7 @@ typedef struct
 {
     // intptr is suitable for storing both pointer and signed values. As 
     // errors in linux kernel are always less than zero, intptr_t is used
-    bool           error;      // indicates if error occured
+    ootm_error     error;      // indicates if error occured
     intptr_t       result;     // return code
     const char*    message;    // possibility to return message
     

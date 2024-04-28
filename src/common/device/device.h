@@ -30,7 +30,7 @@ void ootm_dev_keep_dev(dev_t dev);
 
 /// @brief 
 /// @return 
-dev_t ootm_dev_peek_dev();
+dev_t ootm_dev_peek_dev(void);
 
 
 #endif // DEVICE_H

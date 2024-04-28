@@ -1,0 +1,12 @@
+Directory contains functions commonly used for
+out-of-tree kernel module development. It might
+be cosidered as an SDK-like tool due to most
+API functions from this directory are wrappers
+over the kernel API call combinations and just
+incapsulates complex logic in a single call.
+
+Sources are compiled to binary blob file which
+is renamed to *_shipped as it's required by 
+Kbuild system when linking module against blob
+
+[see https://www.kernel.org/doc/Documentation/kbuild/modules.txt, 3.3 Binary Blobs]

@@ -167,7 +167,7 @@ ootm_dev_create_cdev_region(ootm_result *result)
 
     if (unlikely(ret < 0))
     {
-        result->error = true;
+        result->error = ERR_KERN_CALL;
         result->result = ret;
         result->message = "*_chrdev_region()";
     }
@@ -205,7 +205,7 @@ ootm_dev_add_cdev(dev_t dev, ootm_result *result)
 
     if (unlikely(ret < 0))
     {
-        result->error = true;
+        result->error = ERR_KERN_CALL;
         result->result = ret;
         result->message = "cdev_add()";
     }
@@ -238,7 +238,7 @@ ootm_dev_create_device_nodes(dev_t dev, ootm_result *result)
     devclass = class_create(THIS_MODULE, DEVICE_CLASS_NAME);
     if (unlikely(IS_ERR(devclass)))
     {
-        result->error = true;
+        result->error = ERR_KERN_CALL;
         result->result = (intptr_t) devclass;
         result->message = "class_create()";
         goto exit;
@@ -268,7 +268,7 @@ ootm_dev_create_device_nodes(dev_t dev, ootm_result *result)
             class_destroy(devclass);
             devclass = NULL;
 
-            result->error = true;
+            result->error = ERR_KERN_CALL;
             result->result = PTR_ERR(instance);
             result->message = "device_create()";
             goto exit;

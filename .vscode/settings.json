@@ -4,7 +4,8 @@
     "*.note": "plaintext",
     "device.h": "c",
     "open.h": "c",
-    "headers.h": "c"
+    "headers.h": "c",
+    "read.h": "c"
   },
 
   "highlight.regexes": 

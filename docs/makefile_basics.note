@@ -1,5 +1,4 @@
 
-
 # --------------------------------------------------------------------------- #
 #                    K E R N E L   B U I L D   S Y S T E M                    # 
 # --------------------------------------------------------------------------- #    
@@ -75,7 +74,6 @@ symbols will not appear in kernel ./Module.symvers but only
 in current build directory ./Module.symvers and therefore
 Make will not see them
 
-
                 >> ----------- 4 ----------- <<
 
 
@@ -86,13 +84,21 @@ variable should be initialized. This variable possible names are:
     <module_name_*>-y       common for building modules
     <module_name_*>-objs    the same effect, but usually used for "Host Program"
 
+The step result is <module_name_*>.o which is not linked against kernel symbols.
+
+If one of object files is actually *.o_shipped (binary blob) it's also must be
+passed as simple *.o prerequisite. Kbuild will take care of the rest. For example
+'common_bin.o_shipped' must be passed to <module_name_*>-y as 'common_bin.o'
+
 [!] If there are several source files it's better to avoid to name one of module 
 source files as module itself. Let it be <module_name_*>_main.c for example. and
 it's important to name all object files as source files: it makes possible for
 Make to use implicit rules (see further)
 
-[!] If source file is not in current directory it's better to specify RELATIVE
-and not absolute path to it. Because sometimes absolute path won't work.
+[?] If source file is not in current directory it's better to specify RELATIVE
+and not absolute path to it. Because sometimes absolute path won't work for some
+reason. Maybe it's even better to collect all artifacts in one place before them
+to be actually build into final module file
 
 
 # --------------------------------------------------------------------------- #
@@ -132,6 +138,9 @@ value wich might be hardcoded or evaluated:
     by executing custom command      <var> := ${ <command> <args> }
     according to another variable    <var> := ${ <another_var> }
 
+>> export KDIR
+
+Variable which is marked as 'export' will be passed to nested 'make' call
 
                 >> ----------- 1 ----------- <<
 

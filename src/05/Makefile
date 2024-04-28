@@ -5,9 +5,29 @@ MODULES 	:=  /lib/modules/
 KERN 		:=  ${shell uname -r}
 KDIR 		:=  ${MODULES}/${KERN}/build/
 DEST 		:=  ${MODULES}/${KERN}/kernel/custom/
+STATIC	    :=  /root/kernel/src/common/
 
 
-build: modules clean
+export KDIR
+
+
+default: build
+
+
+rebuild: fullclean build
+
+
+fullclean: distclean
+	make -C ${STATIC} distclean
+
+
+build: static modules clean
+
+
+static:
+	make -C ${STATIC}
+	cp ${STATIC}/_shipped/common_bin.o_shipped .
+	touch .common_bin.o.cmd
 
 
 modules:
@@ -18,10 +38,12 @@ clean:
 	@rm -f    *.o  .*.cmd  .*.cmd  .*.flags  *.mod.c  *.order
 	@rm -f    .*.*.cmd  *~  *.*~  TODO.*  .*.d
 	@rm -rf   .tmp*  *.mod
+	@rm -f    *.o_shipped
+	@rm -f    *.symvers
 
 
 distclean:
-	@rm -f 	  *.ko  *.symvers
+	@rm -f 	  *.ko
 
 
 install:
