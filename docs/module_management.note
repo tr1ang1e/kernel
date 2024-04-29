@@ -37,7 +37,7 @@
     > insert 'blacklist <module>'               // [see man 5 modprobe.d]    [: modprobe.d :] 
 
 
-4. Options      
+4. Options    [: options :]
 
     $ modprobe <module> [ opt=val ]             // also valid for insmod command
     > or create /etc/modprobe.d/...             // [see man 5 modprobe.d and ROOT/etc/modprobe.d/]    [: modprobe.d :]  

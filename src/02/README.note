@@ -1,0 +1,17 @@
+[: options :]
+
+
+Example demonstrates:
+
+	- how might module parameters be set
+	- how get kernel config values 
+
+Execute:
+
+	$ make build
+	$ insmod ootm.ko temp=36.6	    
+	$ cat /sys/module/ootm/parameters/fan
+	$ cat /sys/module/ootm/parameters/temp
+	$ cat /sys/module/ootm/parameters/pins
+	$ rmmod ootm
+	$ make clean

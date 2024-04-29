@@ -7,11 +7,12 @@ TARGET = ootm
 obj-m := $(TARGET).o
 
 
-default:
+build:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
 
 
 clean:
 	@rm -f    *.o  .*.cmd  .*.cmd  .*.flags  *.mod.c  *.order
-	@rm -f    .*.*.cmd  *.symvers  *~  *.*~  TODO.*
+	@rm -f    .*.*.cmd  *~  *.*~  TODO.*
 	@rm -rf   .tmp*  *.mod
+	@rm -f    *.symvers  *.ko

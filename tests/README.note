@@ -1,0 +1,33 @@
+Tests are done to control that changes might be done
+in development environment or sdk-like common module
+or in examples itself will not cause exaples become
+broken. Tests are simple and make just limited set of
+operations over the examples:
+    - build module
+    - run it
+    - check if it does required work
+    - stop it
+    - remove build artifacts
+
+
+To run all tests execute: 
+    $ ./run.sh
+
+
+To run single test:
+    $ cd <example_dir>
+    $ ./test.sh
+
+
+To create test for new example just create file
+in the new example dir:
+    > name it 'test.sh'
+    > make it executable (chmod +x test.sh)
+
+
+Special script 'error.sh' in current directory
+provides constants for specify errors codes and
+their string representations - as well as - set
+of simple functions to control execution flow:    
+    - check_result()    // main function to check single shell command return code
+    - crcb_*()          // check result callback = called from check_result() if return code != 0

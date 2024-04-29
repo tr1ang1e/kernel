@@ -1,0 +1,17 @@
+Example demonstrates:
+
+	- extern symbols creating
+	- extern symbols usage
+
+Execute:
+
+	$ make
+    $ insmod ootm_call.ko       // error because of unknown symbol
+    $ cat Module.symvers        // here this symbol is
+	$ insmod ootm.ko
+    $ insmod ootm_call.ko       // now it's ok
+    $ rmmod ootm                // error because ootm_call refers to this module extern symbol
+    $ lsmod | grep ootm         // ensure that link number is 1
+    $ rmmod ootm_call
+    $ rmmod ootm                // now it's ok
+	$ make distclean

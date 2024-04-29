@@ -1,0 +1,14 @@
+[: asm :]
+
+
+Example demonstrates:
+
+	- basic asm usage
+	- asm overflow detection
+
+Execute:
+
+	$ make build
+	$ insmod ootm.ko   		// error will occur, it's done purposely
+	$ dmesg					// two lies are expected: with correct result ad with overflow message
+	$ make clean

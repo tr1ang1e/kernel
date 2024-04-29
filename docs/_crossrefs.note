@@ -5,9 +5,12 @@ All cross references list:
     [: device_node :]
     [: device_class :]
 
+    [: asm :]
+    [: options :]
     [: fops :]
 
     [: modprobe.d :] 
     [: modules-load.d :]
     [: rsyslog.d :]
     [: udev :]
+    
