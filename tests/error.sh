@@ -52,16 +52,15 @@ check_result()
 
 
 # JUST EXIT FROM TEST SCRIPT WITHOUT ANY CLEANUP OPERATIONS
-crcb_crcb_just_exit()
+crcb_just_exit()
 {
     exit $1
 }
 
 
-# IF ERROR OCCURS IT'S EXPECTED BEHAVIOR: EXIT THERE IS NO ERROR
+# EXIT ONLY IF THERE IS NO ERROR, BECAUSE ERROR OCCURANCE IS AN EXPECTED BEHAVIOR 
 crcb_error_expected()
 {
-    local result=$1
     if [ $1 -eq 0 ]
     then
         exit $ERR_DISAPPEAR

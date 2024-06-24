@@ -28,7 +28,7 @@
         > do step B.                            // autoload is modprobe related feature 
         > create /etc/modules-load.d/...        // [see man 8 systemd-modules-load.service and man 5 modules-load.d and ROOT/etc/modules-load.d/]    [: modules-load.d :]
 
-    D. Autoload: dynamic if smth happened      // when uevent happens, according to the rule [see man 7 udev]     [: udev :]
+    D. Autoload: dynamic if smth happened       // when uevent happens, according to the rule [see man 7 udev]     [: udev :]
 
 
 3. Blacklist 

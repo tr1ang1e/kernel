@@ -1,6 +1,6 @@
 Tests are done to control that changes might be done
 in development environment or sdk-like common module
-or in examples itself will not cause exaples become
+or in examples itself will not cause examples become
 broken. Tests are simple and make just limited set of
 operations over the examples:
     - build module

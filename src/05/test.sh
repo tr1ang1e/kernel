@@ -4,8 +4,10 @@
 source "../../tests/error.sh"
 
  
-run_test()
+function run_test()
 {
+    make distclean
+    
     local result=
     local major=
     local node=

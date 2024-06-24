@@ -27,6 +27,11 @@ src/fops/open/open.o:
 src/fops/read/read.o:
 	make -C ${KDIR} M=`pwd` src/fops/read/read.o
 
+ 
+provide:
+	cp -rT _shipped ${TOPMAKE}
+	touch ${TOPMAKE}/.common_bin.o.cmd    # required for a top Makefile objects vs .shipped file linkage (workaround to solve the issue)
+
 
 clean:
 	@rm -f   */.*.o.cmd */*/.*.o.cmd

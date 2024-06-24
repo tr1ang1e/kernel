@@ -1,6 +1,7 @@
 CONFIG_MODULE_SIG=n
 
 
+TOPMAKE		:=  ${shell pwd}
 MODULES 	:=  /lib/modules/
 KERN 		:=  ${shell uname -r}
 KDIR 		:=  ${MODULES}/${KERN}/build/
@@ -8,6 +9,7 @@ DEST 		:=  ${MODULES}/${KERN}/kernel/custom/
 STATIC	    :=  /root/kernel/src/common/
 
 
+export TOPMAKE
 export KDIR
 
 
@@ -25,9 +27,7 @@ build: static modules clean
 
 
 static:
-	make -C ${STATIC}
-	cp ${STATIC}/_shipped/common_bin.o_shipped .
-	touch .common_bin.o.cmd
+	make -C ${STATIC} all provide
 
 
 modules:

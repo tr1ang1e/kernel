@@ -4,8 +4,10 @@
 source "../../tests/error.sh"
 
 
-run_test()
+function run_test()
 {
+    make distclean
+
     make build
     check_result $? crcb_just_exit $ERR_MAKE_BUILD
 

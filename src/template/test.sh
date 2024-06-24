@@ -4,7 +4,7 @@
 source "../../tests/error.sh"
 
 
-run_test()
+function run_test()
 {
     exit $ERR_OK
 }
