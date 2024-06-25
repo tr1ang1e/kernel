@@ -4,10 +4,14 @@
 source "../../tests/error.sh"
 
 
-function run_test()
+function prepare_test()
 {
     make distclean
+}
 
+
+function run_test()
+{
     make build
     check_result $? crcb_just_exit $ERR_MAKE_BUILD
 
@@ -22,4 +26,5 @@ function run_test()
 }
 
 
+prepare_test
 run_test

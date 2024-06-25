@@ -4,10 +4,14 @@
 source "../../tests/error.sh"			
  
 
-function run_test()
+function prepare_test()
 {
     make distclean
-    
+}
+
+
+function run_test()
+{   
     local result=
     local node=
 
@@ -35,4 +39,5 @@ function run_test()
 }
 
 
+prepare_test
 run_test
