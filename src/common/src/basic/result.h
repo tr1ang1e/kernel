@@ -20,7 +20,7 @@ typedef enum
 
 // [?] In newer kernel versions as well as in old answers on the Internet
 // the assumption that Linux required sizeof(void*) == sizeof(long) is made. 
-// I have ve failed to find any official doc specfying it. But nevertheless
+// I have failed to find any official doc specfying it. But nevertheless...
 typedef long    intptr_t;
 
 

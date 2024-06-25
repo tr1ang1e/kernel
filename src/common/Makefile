@@ -34,7 +34,7 @@ provide:
 
 
 clean:
-	@rm -f   */.*.o.cmd */*/.*.o.cmd
+	@rm -f   */.*.o.cmd */*/.*.o.cmd */*/*/.*.o.cmd
 
 
 distclean: 

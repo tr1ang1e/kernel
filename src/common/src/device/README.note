@@ -1,4 +1,4 @@
-Device value is created while creating crdev region using either:
+Device value is created while creating chrdev region using either:
     - register_chrdev_region()
     - alloc_chrdev_region()
 
@@ -6,6 +6,12 @@ While this operations 3 values are set and never might be changed
     - device major number
     - device minor number
     - minor numbers count
+so that created devices are:    major : [minor + 0]   /   major : [minor + 1]   /   ...   /   major : [minor + minor count - 1]
+                                ^                 ^
+                                |                 |
+                                initial dev_t value
 
-This interface is used to store these values not in global scope
-and to provide convinient API to save and retreive them.
+This device.h/.c interface is used to:
+    > keep related macros 
+    > store device dev_t initial value not in global scope
+    > provide convinient API to save and retreive dev_t initial value
