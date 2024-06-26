@@ -3,6 +3,7 @@
 
 
 #include "../src/basic/author.h"
+#include "../src/basic/constants.h"
 #include "../src/basic/macros.h"
 #include "../src/basic/result.h"
 

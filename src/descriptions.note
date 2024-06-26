@@ -44,7 +44,8 @@
 
         > struct cdev
         > cdev_init()
-        > cdev_add
+        > cdev_add()
+        > cdev_del()
 
     - Set major and minor numbers
 
@@ -75,3 +76,11 @@
         > PTR_ERR()
 
 08. UDEV USAGE (create symlink to existent device node)
+
+09. REGISTER DRIVER: miscellaneous device
+
+    - Register driver
+
+        > struct miscdevice
+        > misc_register()
+        > misc_deregister()

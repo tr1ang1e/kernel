@@ -40,7 +40,7 @@ ERR_STRINGS=(
 
 
 # CHECK COMMAND RESULT ($1) AND CALL CALLBACK ($2) WITH GIVEN ERRCODE ($3)
-check_result()
+function check_result()
 {
     local result=$1
     if [ $result -ne 0 ]
@@ -52,14 +52,21 @@ check_result()
 
 
 # JUST EXIT FROM TEST SCRIPT WITHOUT ANY CLEANUP OPERATIONS
-crcb_just_exit()
+function crcb_just_exit()
 {
     exit $1
 }
 
 
+function crcb_distclean_and_exit()
+{
+    make distclean
+    exit $1
+}
+
+
 # EXIT ONLY IF THERE IS NO ERROR, BECAUSE ERROR OCCURANCE IS AN EXPECTED BEHAVIOR 
-crcb_error_expected()
+function crcb_error_expected()
 {
     if [ $1 -eq 0 ]
     then

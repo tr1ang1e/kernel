@@ -1,0 +1,12 @@
+Example demonstrates:
+
+	Register of miscellaneous device
+
+
+Execute:
+
+	$ make
+	$ insmod ootm.ko
+	$ cat /dev/ootm_misc
+	$ rmmod ootm
+	$ make distclean

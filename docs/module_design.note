@@ -22,17 +22,48 @@ Available approaches:
 
 1. Using 'struct cdev' [see <linux/cdev.h>]
 
+        prepare
         >> static struct file_operations fops = { ... };		// file operations
         >> static struct cdev hcdev = { 0 };				// character device handler
-    	>> cdev_init(&hcdev, &fops);					// always success
-    	>> hcdev.owner = THIS_MODULE;					// 
-	>> int ret = cdev_add(&hcdev, MKDEV(...), DEVICE_COUNT);	// negative ret means error
+
+        ceate character device region (major + minors count)
+        >> int ret = register_chrdev_region(...)                        // variant 1 = set custom major number
+        >> int ret = alloc_chrdev_region(...)                           // variant 2 = get major number automatically
+
+        create character device
+    	>> cdev_init(&hcdev, &fops);					// init character device
+    	>> hcdev.owner = THIS_MODULE;					// set character device owner module
+	>> int ret = cdev_add(&hcdev, MKDEV(...), DEVICE_COUNT);	// actually create character device               
+
+        ... ... ... ... ... ... ... ... ... ... ... ... ... ...
+
+        destroy character device
+        >> cdev_del(&hcdev);
+
+        destroy character device region
+        >> unregister_chrdev_region(...)
+
 
 2. Misc drivers (miscellaneous)
 
-        ...
-        ...
-        ...
+[!] Features:   
+        - major number is always 10 for all misc devices
+        - only one device instance with major=10 and minor=<minor> combination will be created  --  see "misc_dev.minor" below
+        - device node will be created automatically (following step (2) might be skipped)       --  see "mics_dev.name"  below
+
+        prepare
+        >> static struct file_operations fops = { ... };		// file operations
+        >> static struct miscdevice misc_dev = { ... };			// misc device handler
+        >>      misc_dev.minor = MISC_DYNAMIC_MINOR;                    // variant 1 = get minor number automatically
+        >>      misc_dev.minor = <minor>;                               // variant 2 = set custom minor number
+        >>      misc_dev.name  = <node_name>;                           // set node name: /dev/<node_name>
+
+        create mics device (and corecponding /dev/... node)
+        >> int ret = misc_register(&misc_dev);
+
+        destroy misc device (and corecponding /dev/... node)
+        >> misc_deregister(&misc_dev);
+
 
 3. Using 'register_chrdev()'
 
@@ -66,9 +97,9 @@ Approaches to set dev_t <complex_value> and register it:
 >> unregister_chrdev_region(dev, <device_count>);				  // at the module work end unregister is necessary
 
 [!] Don't confuse module name, device name and device node
-[!]     [: module_name :]  -  /proc/modules - is used in Makefile and for module management (modprobe, rmmod, udev DEVPATH, ...)
-[!]     [: device_name :]  -  /proc/devices - is name which will be used to register in and appear in uevents
-[!]     [: device_node :]  -  /dev/... - is file which will linked against device major and minor values
+[!]     [: module_name :]  -  /proc/modules  -  is used in Makefile and for module management (modprobe, rmmod, udev DEVPATH, ...)
+[!]     [: device_name :]  -  /proc/devices  -  is name which will be used to register in and appear in uevents
+[!]     [: device_node :]  -  /dev/...       -  is file which will linked against device major and minor values
 
 After it we should choose approach of how will 
 device with registered major and minor values be 
@@ -131,8 +162,8 @@ example, node might be created in the directory of module compilation.
         Managing device:
         [: device_node :]
                 step 1  =  create file with rules: <priority>-<filename>.rules
-                        to create device node, use script (which creats nodes) and  >> RUN+="<script>.sh" 
-                        to create symlink to device node, use  >> SYMLINK+="<linkname>"
+                        to create device node, use script           >> RUN+="<create_nodes>.sh" 
+                        to create symlink to device node, use       >> SYMLINK+="<link_name>"
                 step 2  =  place it to one of the valid paths, e.g.: /etc/udev/rules.d/
                 step 3  =  $ systemctl restart udev  or  $ udevadm control --reload-rules
                 step 4  =  load or remove module
@@ -148,10 +179,20 @@ example, node might be created in the directory of module compilation.
 3. Automatically: class_create() + device_create()    [: device_class :]
 
         Device nodes might be created from inside source code.
-        The kernel API for that:
-                - struct class *                            // device class handler
-                - class_create(), class_destroy()           // manage device class
-                - device_create(), device_destroy()         // manage device class instances
+
+        prepare
+        >> static struct class *devclass = NULL;                        // character device class        (major number)
+        >> struct device *devinstance = NULL;                           // character device instance     (minor number)
+
+        create character device nodes
+        >> devclass = class_create(...)                                 // create device class           (major number)         
+        >> for (...) { devinstance = device_create(...) }               // create device instances       (major:minorX)
+
+        ... ... ... ... ... ... ... ... ... ... ... ... ... ...
+
+        destroy character device nodes
+        >> class_destroy(...)
+        >> for (...) { device_destroy(...) }     
 
         
 # --------------------------------------------------------------------------- #
@@ -184,7 +225,7 @@ example, node might be created in the directory of module compilation.
         >> struct inode_operations = { ... };
 
         If handler function is specified it will be called for corresponding
-        operation. Otherwise either DAFAULT HANDLER will be called or specific
+        operation. Otherwise either [!] DAFAULT HANDLER will be called or specific
         error 'not implemented yet' will be returned
 
         Handler prototypes are mostly of the following template:

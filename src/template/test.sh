@@ -6,7 +6,7 @@ source "../../tests/error.sh"
 
 function prepare_test()
 {
-
+    :
 }
 
 
