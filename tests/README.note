@@ -10,24 +10,19 @@ operations over the examples:
     - remove build artifacts
 
 
-To run all tests execute: 
-    $ ./run.sh
-
-
-To run single test:
-    $ cd <example_dir>
-    $ ./test.sh
+Usage
+    $ cd ROOT/tests/        necessary
+    $ ./run.sh              run all tests inside ROOT/src/*/ directories
+    $ ./run.sh <dir>        run singe test inside ROOT/src/<dir>/
 
 
 To create test for new example just create file
 in the new example dir:
     > name it 'test.sh'
     > make it executable (chmod +x test.sh)
+Template might be found in ROOT/src/template/
 
 
-Special script 'error.sh' in current directory
+Special script 'errcode.sh' in current directory
 provides constants for specify errors codes and
-their string representations - as well as - set
-of simple functions to control execution flow:    
-    - check_result()    // main function to check single shell command return code
-    - crcb_*()          // check result callback = called from check_result() if return code != 0
+their string representations.

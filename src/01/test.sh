@@ -1,32 +1,78 @@
 #!/bin/bash
 
 
-source "../../tests/error.sh"
+source "../../tests/errcode.sh"
 
 
-function prepare_test()
+PENDING_ERROR=$ERR_OK
+
+
+function prepare()
 {
-    make distclean
-}
-
-
-function run_test()
-{    
-    make build
-    check_result $? crcb_just_exit $ERR_MAKE_BUILD
-
-    insmod ootm.ko
-    check_result $? crcb_just_exit $ERR_INSMOD
-
-    rmmod ootm
-    check_result $? crcb_just_exit $ERR_CRIT
-
     make clean
-    check_result $? crcb_just_exit $ERR_MAKE_DISTCLEAN
 
-    exit $ERR_OK
+    rc_create_retcode $FSM_NEXT
+    return $?
 }
 
 
-prepare_test
-run_test
+function build()
+{
+    make build
+
+    if [ $? != 0 ] 
+    then rc_create_retcode $FSM_ERRC $ERR_MAKE_BUILD
+    else rc_create_retcode $FSM_NEXT
+    fi
+    return $?
+}
+
+
+function insert()
+{
+    insmod ootm.ko
+
+    if [ $? != 0 ] 
+    then rc_create_retcode $FSM_ERRC $ERR_INSMOD
+    else rc_create_retcode $FSM_NEXT
+    fi
+    return $?
+}
+
+
+function remove()
+{
+    rmmod ootm
+
+    if [ $? != 0 ] 
+    then rc_create_retcode $FSM_ERRC $ERR_CRIT
+    else rc_create_retcode $FSM_NEXT
+    fi
+    return $?
+}
+
+
+function clean()
+{
+    make clean
+
+    if [ $PENDING_ERROR != $ERR_OK ]
+    then
+        rc_create_retcode $FSM_STOP $PENDING_ERROR
+        return $?
+    fi
+
+    if [ $2 == $FSM_ERRC ]
+    then
+        PENDING_ERROR=$3
+        rc_create_retcode $FSM_GOTO 3
+        return $?
+    fi
+
+    rc_create_retcode $FSM_STOP $ERR_OK
+    return $?
+}
+
+
+#                               0       1     2      3      4
+declare -a fsm_test_functions=( prepare build insert remove clean )

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-source "error.sh"
+source "errcode.sh"
 
 
 # ----------------------------------------------------------- #
@@ -20,6 +20,7 @@ shopt -s nullglob       # prevent empty ../src/*/ result specific loop behavior
 shopt -u dotglob        # exclude hidden directories from being itarated over
 
 RED='\033[0;31m'
+BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RESTORE='\033[0m'
@@ -30,90 +31,7 @@ RESTORE='\033[0m'
 # ----------------------------------------------------------- #
 
 
-run_test()
-{
-    tmp=`pwd`
-    cd $1 
-    
-    print_test_begin
-    eval "./$testName"
-    result=$?
-    print_test_end $result
-
-    cd $tmp
-    return $result
-}
-
-
-test_if_critical()
-{
-    if [ $1 -eq $ERR_CRIT ]
-    then
-        echo -e "${RED}CRITICAL ERROR ... $2${RESTORE}"
-        echo -e "${YELLOW}Check testing log and restore OS state${RESTORE}"
-        exit $ERR_OK
-    fi
-}
-
-
-push_result()
-{
-    if [ $1 -eq 0 ];
-    then   
-        successTests+=" $2"
-    else    
-        failureTests+=" $2"
-    fi
-}
-
-
-print_results()
-{
-    echo -e "${GREEN}[ SUCCESS ]"
-    for test in $successTests
-    do
-        echo "   $test"
-    done
-    echo -e ${RESTORE}
-
-
-    echo -e "${RED}[ FAILURE ]"
-    for test in $failureTests
-    do
-        echo "   $test"
-    done
-    echo -e ${RESTORE}
-}
-
-
-print_test_begin()
-{
-    echo -e "${YELLOW}[ TEST ] ........ `pwd`${RESTORE}"
-}
-
-
-print_test_end()
-{
-    local result=
-
-    if [ $1 -eq 0 ]
-    then
-        result="${GREEN} ok ${RESTORE}"
-        echo -e "[ $result ]\n"
-    else
-        result="${RED}fail${RESTORE}"
-        errcode="${RED}${ERR_STRINGS[$1]}${RESTORE}"
-        echo -e "[ $result ] ........ ${errcode}\n"
-    fi
-}
-
-
-# ----------------------------------------------------------- #
-#                          M A I N                            #
-# ----------------------------------------------------------- #
-
-
-run_all_tests()
+function run_all_tests()
 {
     echo -e "Start tests\n"
     
@@ -121,7 +39,6 @@ run_all_tests()
     sourcesDirAbsolute=`pwd`
     sourcesDirs=()
     arr=()
-
 
     for dir in "$sourcesDirAbsolute/*/"
     do      
@@ -145,4 +62,199 @@ run_all_tests()
 }
 
 
-run_all_tests
+function run_single_test()
+{
+    cd $sourcesDirRelative
+    sourcesDirAbsolute=`pwd`
+
+    testDir=$sourcesDirAbsolute/$1
+    testFile="$testDir/$testName"
+    
+    if [ -f $testFile ];
+    then run_test $testDir
+    else 
+        echo -e ${YELLOW}
+        echo "No $testDir dir or file $testDir/$testName does not exist"
+        echo -e ${RESTORE}
+    fi 
+
+    cd
+}
+
+
+function run_test()
+{
+    tmp=`pwd`
+    cd $1 
+    print_test_begin
+    
+    source $testName
+
+    test_result=$ERR_OK
+        
+    stop=false
+    idx=0
+    prev_idx=$idx
+    count=${#fsm_test_functions[@]}
+    
+    result_type=$ERR_CODE
+    result_value=$ERR_OK
+
+    while [ $stop != true ] && [ $idx != $count ]
+    do
+
+        echo -e "${BLUE}${fsm_test_functions[$idx]}${RESTORE}"
+
+        ${fsm_test_functions[$idx]} $prev_idx $result_type $result_value
+        result=$?
+        prev_idx=$idx
+
+        rc_retrieve_type $result
+        result_type=$?
+
+        rc_retrieve_value $result
+        result_value=$?
+
+        if [ $result_type == $ERR_CODE ]
+        then
+            
+            # If current FSM function returns ERR_CODE constant
+            # it means that critical error occured so that entire 
+            # test flow must be stopped. 
+            #
+            # To indicate not critical error use:
+            #       rc_create_retcode $FSM_ERRC $ERR_<error>
+
+            test_result=$ERR_CRIT
+            break;
+        
+        else
+
+            case $result_type in
+
+                $FSM_NEXT)
+                    idx=$((idx+1))
+                    ;;
+
+                $FSM_GOTO)
+                    idx=$result_value
+                    ;;
+
+                $FSM_STOP)
+                    test_result=$result_value
+                    stop=true
+                    ;;
+
+                $FSM_ERRC)
+                    if [ $result_value == $ERR_CRIT ] 
+                    then
+                        test_result=$ERR_CRIT
+                        break
+                    fi
+                    idx=$((count-1))
+                    ;;
+
+                *)
+                    echo "unknown fsm signal"
+                    test_result=$ERR_CRIT
+                    break
+                    ;;
+        
+            esac
+        
+        fi
+
+    done
+
+    print_test_end $test_result
+    cd $tmp
+    return $test_result    
+}
+
+
+function test_if_critical()
+{
+    if [ $1 -eq $ERR_CRIT ]
+    then
+        echo -e "${RED}CRITICAL ERROR ... $2${RESTORE}"
+        echo -e "${YELLOW}Check testing log and restore OS state${RESTORE}"
+        exit $ERR_OK
+    fi
+}
+
+
+function push_result()
+{
+    if [ $1 -eq $ERR_OK ];
+    then   
+        successTests+=" $2"
+    else    
+        failureTests+=" $2"
+    fi
+}
+
+
+function print_results()
+{
+    echo -e "${GREEN}[ SUCCESS ]"
+    for test in $successTests
+    do
+        echo "   $test"
+    done
+    echo -e ${RESTORE}
+
+
+    echo -e "${RED}[ FAILURE ]"
+    for test in $failureTests
+    do
+        echo "   $test"
+    done
+    echo -e ${RESTORE}
+}
+
+
+function print_test_begin()
+{
+    echo -e "${YELLOW}[ TEST ] ........ `pwd`${RESTORE}"
+}
+
+
+function print_test_end()
+{
+    local result=
+
+    if [ $1 -eq $ERR_OK ]
+    then
+        result="${GREEN} ok ${RESTORE}"
+        echo -e "[ $result ]\n"
+    else
+        result="${RED}fail${RESTORE}"
+        errcode="${RED}${ERR_STRINGS[$1]}${RESTORE}"
+        echo -e "[ $result ] ........ ${errcode}\n"
+    fi
+}
+
+
+# ----------------------------------------------------------- #
+#                          M A I N                            #
+# ----------------------------------------------------------- #
+
+
+case $# in
+
+    0)
+        run_all_tests
+        ;;
+    
+    1)
+        run_single_test $1
+        ;;
+
+    *)
+        echo "Wrong args number"
+        echo "Usage:"
+        echo "  ./run.sh            run all tests inside ROOT/src/*/ directories"
+        echo "  ./run.sh <dir>      run single test inside ROOT/src/<dir>/"
+        ;;
+
+esac

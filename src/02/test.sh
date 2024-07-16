@@ -1,41 +1,127 @@
 #!/bin/bash
 
 
-source "../../tests/error.sh"
+source "../../tests/errcode.sh"
 
 
-function prepare_test()
+PENDING_ERROR=$ERR_OK
+
+
+function prepare()
 {
-    make distclean
-}
-
-
-function run_test()
-{   
-    make build
-    check_result $? crcb_just_exit $ERR_MAKE_BUILD
-
-    insmod ootm.ko temp=36.6
-    check_result $? crcb_just_exit $ERR_INSMOD
-
-    cat /sys/module/ootm/parameters/fan
-    check_result $? crcb_just_exit $ERR_CAT
-
-    cat /sys/module/ootm/parameters/temp
-    check_result $? crcb_just_exit $ERR_CAT
-
-    cat /sys/module/ootm/parameters/pins
-    check_result $? crcb_just_exit $ERR_CAT
-
-    rmmod ootm
-    check_result $? crcb_just_exit $ERR_CRIT
-
     make clean
-    check_result $? crcb_just_exit $ERR_MAKE_DISTCLEAN
 
-    exit $ERR_OK
+    rc_create_retcode $FSM_NEXT
+    return $?
 }
 
 
-prepare_test
-run_test
+function build()
+{
+    make build
+
+    if [ $? != 0 ] 
+    then rc_create_retcode $FSM_ERRC $ERR_MAKE_BUILD
+    else rc_create_retcode $FSM_NEXT
+    fi
+    return $?
+}
+
+
+function insert()
+{
+    insmod ootm.ko temp=36.6
+
+    if [ $? != 0 ] 
+    then rc_create_retcode $FSM_ERRC $ERR_INSMOD
+    else rc_create_retcode $FSM_NEXT
+    fi
+    return $?
+}
+
+
+function read_opts()
+{
+    rc=true
+
+    while :
+    do
+        opt_fan=$(cat /sys/module/ootm/parameters/fan)
+        if [ $? != 0 ]
+        then
+            rc=false
+            break
+        fi
+
+        opt_temp=$(cat /sys/module/ootm/parameters/temp)
+        if [ $? != 0 ]
+        then
+            rc=false
+            break
+        fi
+
+        opt_pins=$(cat /sys/module/ootm/parameters/pins)
+        if [ $? != 0 ]
+        then
+            rc=false
+            break
+        fi
+
+        break
+    done
+
+    if [ $rc != true ]
+    then
+        rc_create_retcode $FSM_ERRC $ERR_CAT
+        return $?
+    fi
+
+    opt_all=$(echo $opt_fan $opt_temp $opt_pins)
+    if [[ $opt_all != "N 36.6 41,42,43" ]]
+    then
+        rc_create_retcode $FSM_ERRC $ERR_VALUE
+        return $?
+    fi
+
+    rc_create_retcode $FSM_NEXT
+    return $?
+}
+
+
+function remove()
+{
+    rmmod ootm
+
+    if [ $? != 0 ] 
+    then rc_create_retcode $FSM_ERRC $ERR_CRIT
+    else rc_create_retcode $FSM_NEXT
+    fi
+    
+    return $?
+}
+
+
+function clean()
+{
+    make clean
+
+    if [ $PENDING_ERROR != $ERR_OK ]
+    then
+        rc_create_retcode $FSM_STOP $PENDING_ERROR
+        return $?
+    fi
+
+    if [ $2 == $FSM_ERRC ]
+    then
+        PENDING_ERROR=$3
+        rc_create_retcode $FSM_GOTO 4
+        return $?
+    fi
+
+    rc_create_retcode $FSM_STOP $ERR_OK
+    return $?
+}
+
+
+#                               0       1     2      3         4      5
+declare -a fsm_test_functions=( prepare build insert read_opts remove clean )
