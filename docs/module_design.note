@@ -20,6 +20,7 @@ Three key points:
 
 Available approaches:
 
+
 1. Using 'struct cdev' [see <linux/cdev.h>]
 
         prepare
@@ -35,7 +36,7 @@ Available approaches:
     	>> hcdev.owner = THIS_MODULE;					// set character device owner module
 	>> int ret = cdev_add(&hcdev, MKDEV(...), DEVICE_COUNT);	// actually create character device               
 
-        ... ... ... ... ... ... ... ... ... ... ... ... ... ...
+        ... ... ... ... ... ... ... ... ... ... ... ... ... ...         // work
 
         destroy character device
         >> cdev_del(&hcdev);
@@ -61,15 +62,28 @@ Available approaches:
         create mics device (and corecponding /dev/... node)
         >> int ret = misc_register(&misc_dev);
 
+        ... ... ... ... ... ... ... ... ... ... ... ... ... ...         // work
+
         destroy misc device (and corecponding /dev/... node)
         >> misc_deregister(&misc_dev);
 
 
 3. Using 'register_chrdev()'
 
-        ...
-        ...
-        ...
+[!] Features:  
+        - major number must be set explicitely (cant be get automatically)
+        - minor range 0..255 is automatically created so that nodes from <major>:0 to <major>:255 are valid
+
+        prepare
+        >> static struct file_operations fops = { ... };		// file operations
+
+        create character device:
+        >> int ret = register_chrdev(...);
+
+        ... ... ... ... ... ... ... ... ... ... ... ... ... ...         // work
+
+        destroy character device:
+        >> unregister_chrdev(...);
 
 
 # --------------------------------------------------------------------------- #
@@ -92,14 +106,14 @@ Available approaches:
 Approaches to set dev_t <complex_value> and register it:
 
 >> dev = MKDEV(major, minor); 
->> alloc_chrdev_region(&dev, <device_count>, <device_name>);    		  // variant 1: automatically      
->> register_chrdev_region(dev, <device_first>, <device_count>, <device_name>);    // variant 2: manually 
+>> alloc_chrdev_region(&dev, <device_count>, <device_name>);    		  // variant 1: automatically           [: device_name :]   
+>> register_chrdev_region(dev, <device_first>, <device_count>, <device_name>);    // variant 2: manually                [: device_name :]
 >> unregister_chrdev_region(dev, <device_count>);				  // at the module work end unregister is necessary
 
 [!] Don't confuse module name, device name and device node
-[!]     [: module_name :]  -  /proc/modules  -  is used in Makefile and for module management (modprobe, rmmod, udev DEVPATH, ...)
-[!]     [: device_name :]  -  /proc/devices  -  is name which will be used to register in and appear in uevents
-[!]     [: device_node :]  -  /dev/...       -  is file which will linked against device major and minor values
+[!]     [: module_name :]  -  /proc/modules  -  MAKEFILE                 -  is used in Makefile and for module management (modprobe, rmmod, udev DEVPATH, ...)
+[!]     [: device_name :]  -  /proc/devices  -  DEVICE (maj, min_count)  -  is name which will be used to register device and which will appear in uevents
+[!]     [: device_node :]  -  /dev/...       -  NODE (class instance)    -  represents device class instance = file, linked against device maj + min value
 
 After it we should choose approach of how will 
 device with registered major and minor values be 
@@ -238,10 +252,19 @@ example, node might be created in the directory of module compilation.
         file descriptors are allowed for the same device and all of them
         are unique. But 'struct inode *' is always the same as it's unique
 
-4. Files:
+
+4. 'ioctl' mechanism
+
+        ...
+        ...
+        ...
+
+
+5. Files:
 
         /proc/...    pseudofiles; data is always in symbolic format, not binary
         /sys/....    modern interface similar to /proc/
 
 
-5. Net interfaces: create new or modify existent
+6. Net interfaces: create new or modify existent
+

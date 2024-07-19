@@ -10,8 +10,8 @@
 /* --------------------------------------------------------- */
 
 
-#define MODULE_NAME             "ootm"
-#define DEVICE_NAME             MODULE_NAME "_cdev"
+#define MODULE_NAME             "ootm"                      // [: module_name :]
+#define DEVICE_NAME             MODULE_NAME "_cdev"         // [: device_name :]
 #define DEVICE_CLASS_NAME       DEVICE_NAME "_class"
 #define DEVICE_INSTANCE_NAME    MODULE_NAME
 #define DEVICE_MINOR_FIRST      0

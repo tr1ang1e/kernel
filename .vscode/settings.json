@@ -5,7 +5,9 @@
     "device.h": "c",
     "open.h": "c",
     "headers.h": "c",
-    "read.h": "c"
+    "read.h": "c",
+    "ioctl.h": "c",
+    "stdlib.h": "c"
   },
 
   "highlight.regexes": 
@@ -51,7 +53,7 @@
       ]
     },
 
-    "(0*[0-9]\\. )(.*)": 
+    "([0-9]*[0-9]\\. )(.*)": 
     {
       "filterFileRegex": ".*\\.note",
       "decorations":

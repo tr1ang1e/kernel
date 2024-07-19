@@ -84,3 +84,5 @@
         > struct miscdevice
         > misc_register()
         > misc_deregister()
+
+10. REGISTER DRIVER: old style

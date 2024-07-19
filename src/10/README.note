@@ -1,0 +1,22 @@
+Example demonstrates:
+
+	Old style of character device creation
+
+
+Execute:
+
+	$ make build
+	$ insmod ootm.ko [major=<value>]	     	// load module [set major manually or auto]
+	$ cat /sys/module/ootm/parameters/major	    // get actual major number
+	$ cat /proc/devices | grep DEVICE_NAME      // check if module is registered as device with same major
+	$ mknod -m006 /dev/ootm0 c <major> 0        // create device node for major=<major> minor=0  [see man 1 mknod]
+	$ mknod -m006 /dev/ootm42 c <major> 42      // create device node for major=<major> minor=42 
+	$ mknod -m006 /dev/ootm255 c <major> 255    // create device node for major=<major> minor=255
+	$ mknod -m006 /dev/ootm256 c <major> 256    // create device node for major=<major> minor=256  [!] no error, but see further
+	$ cat /dev/ootm0			     			// Ok
+	$ cat /dev/ootm42			     			// Ok
+	$ cat /dev/ootm255			     			// Ok
+	$ cat /dev/ootm256			     			// [!] error: only 0..255 minor numbers are allowed when using old style approach
+	$ rm /dev/ootm*				     			// destroy device nodes
+	$ rmmod ootm				     			// unload module
+	$ make distclean							// remove module itself and other files are left
