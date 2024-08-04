@@ -1,0 +1,19 @@
+Example demonstrates:
+
+	ioctl command registration and usage. Note that presented 
+	hear struct file_operations::unlocked_ioctl is valid only 
+	if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 35). For
+	earlier versions the member and signature are different.
+
+Execute:
+
+	$ make build
+	$ insmod ootm.ko [major=<value>]	     		// load module [set major manually or auto]
+	$ cat /sys/module/ootm/parameters/major	    	// get actual major number
+	$ cat /proc/devices | grep DEVICE_NAME      	// check if module is registered as device with same major
+	$ mknod -m006 /dev/ioctl c <major> <minor>  	// create device node for major=<major> minor=0..255  [see man 1 mknod]
+	$ cat /dev/ioctl			     				// test if character device implement file operations 'open' and 'read'
+	$ ./ioctl_test.out								// test if character device implement file operations 'ioctl'
+	$ rm /dev/ioctl			     					// destroy device node
+	$ rmmod ootm				     				// unload module
+	$ make distclean								// remove module itself and other files are left

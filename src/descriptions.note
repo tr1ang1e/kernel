@@ -86,3 +86,5 @@
         > misc_deregister()
 
 10. REGISTER DRIVER: old style
+
+11. IOCTL() USAGE

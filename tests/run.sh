@@ -31,6 +31,14 @@ RESTORE='\033[0m'
 # ----------------------------------------------------------- #
 
 
+function print_help()
+{
+    echo "Usage:"
+    echo "  ./run.sh            run all tests inside ROOT/src/*/ directories"
+    echo "  ./run.sh <dir>      run single test inside ROOT/src/<dir>/"
+}
+
+
 function run_all_tests()
 {
     echo -e "Start tests\n"
@@ -242,19 +250,23 @@ function print_test_end()
 
 case $# in
 
-    0)
-        run_all_tests
-        ;;
-    
     1)
-        run_single_test $1
+        if [ "$1" = "--help" ]
+        then 
+            print_help
+            exit 0
+        fi
+
+        if [ "$1" = "all" ]
+            then  run_all_tests
+            else  run_single_test $1
+        fi
+
         ;;
 
     *)
         echo "Wrong args number"
-        echo "Usage:"
-        echo "  ./run.sh            run all tests inside ROOT/src/*/ directories"
-        echo "  ./run.sh <dir>      run single test inside ROOT/src/<dir>/"
+        print_help
         ;;
 
 esac

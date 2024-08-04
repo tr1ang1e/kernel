@@ -7,6 +7,9 @@ source "../../tests/errcode.sh"
 PENDING_ERROR=$ERR_OK
 
 
+NODE="/dev/ioctl"
+
+
 function prepare()
 {
     make distclean
@@ -59,25 +62,29 @@ function makenodes()
         return $?
     fi
 
-    minors=(0 42 255)
-    for minor in ${minors[*]}
-    do
-        node="/dev/ootm$minor"
-        
-        mknod -m006 $node c $major $minor
-        if [ $? != 0 ] 
-        then
-            rc_create_retcode $FSM_ERRC $ERR_MKNOD
-            return $?
-        fi
+    minor=200
 
-        cat $node
-        if [ $? != 0 ] 
-        then
-            rc_create_retcode $FSM_ERRC $ERR_CAT
-            return $?
-        fi
-    done
+    mknod -m006 $NODE c $major $minor
+    if [ $? != 0 ] 
+    then
+        rc_create_retcode $FSM_ERRC $ERR_MKNOD
+        return $?
+    fi
+
+    rc_create_retcode $FSM_NEXT
+    return $?
+}
+
+
+function ioctl()
+{
+    text=`./ioctl_test.out`
+
+    if [ $? != 0 ] || [ "$text" != "Hello, ioctl!" ]
+    then
+        rc_create_retcode $FSM_ERRC $ERR_EXEC
+        return $?
+    fi
 
     rc_create_retcode $FSM_NEXT
     return $?
@@ -86,7 +93,7 @@ function makenodes()
 
 function remove()
 {
-    rm /dev/ootm*
+    rm $NODE
 
     if [ $? != 0 ]
     then
@@ -120,7 +127,7 @@ function clean()
     if [ $2 == $FSM_ERRC ]
     then
         PENDING_ERROR=$3
-        rc_create_retcode $FSM_GOTO 4
+        rc_create_retcode $FSM_GOTO 5
         return $?
     fi
 
@@ -129,5 +136,5 @@ function clean()
 }
 
 
-#                               0       1     2      3         4      5
-declare -a fsm_test_functions=( prepare build insert makenodes remove clean )
+#                               0       1     2      3         4     5      6
+declare -a fsm_test_functions=( prepare build insert makenodes ioctl remove clean )

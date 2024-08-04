@@ -217,11 +217,13 @@ example, node might be created in the directory of module compilation.
 1. Log system: see doc about reading kernel logs
 
 
-2. Data exchange system calls:  
-   $ cat /proc/kallsyms | grep T | grep <symbol> 
-        symbol:     'copy_to_user' or 'copy_from_user'
-        header:      /lib/modules/`uname -r`/build/include/asm-generic/uaccess.h 
-        comment:     interrupt-ctx-forbidden (disk operations if user memory page not in RAM)
+2. Data exchange system calls:
+
+        $ cat /proc/kallsyms | grep T | grep <symbol> 
+
+                symbol:     'copy_to_user' or 'copy_from_user'
+                header:      /lib/modules/`uname -r`/build/include/asm-generic/uaccess.h 
+                comment:     interrupt-ctx-forbidden (disk operations if user memory page not in RAM)
 
 
 3. Using symbol devices names and filesystem interface
@@ -255,9 +257,25 @@ example, node might be created in the directory of module compilation.
 
 4. 'ioctl' mechanism
 
-        ...
-        ...
-        ...
+        from module     >> struct file_operations::unlocked_ioctl = int (*)(struct file *f, unsigned int <cmd>, unsigned long <arg>)
+        from code       >> ioctl(<fd>, <cmd>, <arg>);
+
+        <cmd> consists of 4 parts and should be constructed into single constant using macros  >> _IOC(<direction>, <type>, <command>, <size>)
+
+                data direction          =  _IOC_NONE, _IOC_READ, _IOC_WRITE, (_IOC_READ | _IOC_WRITE)
+                type number             =  is used to debug if ioctl() was called for incorerct <fd>  [see for example https://docs.kernel.org/userspace-api/ioctl/ioctl-number.html]
+                command number          =  code for module to detect which command to handle
+                argument size           =  size of type, pointer to which instance is passed via <arg>
+        
+        [!] When call ioctl() from user-space code, first argument 
+            is just a file descriptor <fd>, while to module handler 
+            the 'struct file *f' argument is proveded. Rest arguments 
+            are delivered as is: <cmd>==<cmd>, <arg>==<arg> 
+        
+        Data might be passed:
+
+                user-space -> module    = command number / <arg> which might be interpret as a number or used via >> copy_from_user(..., (void *)<arg>, ...);
+                module -> user-space    = ioctl handler return code / <arg> used as destination via >> copy_to_user((void *)<arg>, ...);
 
 
 5. Files:
