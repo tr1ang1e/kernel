@@ -249,10 +249,13 @@ example, node might be created in the directory of module compilation.
                 file_operations   =  <type> (*<name>) (struct file *, <args>);          [: fops :]
                 inode_operations  =  <type> (*<name>) (struct inode *, <args>);
 
-        [!] The 'struct file *' argument is associated with particulatr file
-        descriptor and therefore might differ from call to call as several
-        file descriptors are allowed for the same device and all of them
-        are unique. But 'struct inode *' is always the same as it's unique
+        [!] 'struct inode *' is associated with file itself, doesn't matter
+        if somebody uses this file from user-space or not. The 'struct file *' 
+        is associated with particulatr file descriptor after somebody called
+        open() for the file. Therefore 'struct inode *' argument value is always 
+        the same through all calls. But 'struct file *' might differ from 
+        call to call as several file descriptors are allowed to be associated
+        with the same inode (for example, open() is called several times).
 
 
 4. 'ioctl' mechanism

@@ -15,7 +15,7 @@ static int device_open_counter = 0;
 
 
 int 
-fops_open(struct inode* inode, struct file* file)
+fops_open_exclusive(struct inode* inode, struct file* file)
 {
     if (0 != device_open_counter)
     {
@@ -29,7 +29,7 @@ fops_open(struct inode* inode, struct file* file)
 
 
 int 
-fops_release(struct inode* inode, struct file* file)
+fops_release_exclusive(struct inode* inode, struct file* file)
 {
     device_open_counter = 0;
 

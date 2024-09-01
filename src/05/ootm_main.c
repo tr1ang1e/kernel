@@ -26,8 +26,8 @@ module_param(major, int, S_IRUGO);
 static struct file_operations fops =
 {
     .owner    = THIS_MODULE,
-    .open     = fops_open,
-    .release  = fops_release,
+    .open     = fops_open_exclusive,
+    .release  = fops_release_exclusive,
     .read     = fops_read
 };
 

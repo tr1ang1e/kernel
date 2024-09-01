@@ -23,13 +23,13 @@
 /* --------------------------------------------------------- */
 
 
-/// @brief 
-/// @param dev 
+/// @brief Save dev_t value made of <MAJOR> + <MINOR_0> values
+/// @param dev - value to be saved
 void ootm_dev_keep_dev(dev_t dev);
 
 
-/// @brief 
-/// @return 
+/// @brief Get previously saved dev_t value
+/// @return defv_t value
 dev_t ootm_dev_peek_dev(void);
 
 
