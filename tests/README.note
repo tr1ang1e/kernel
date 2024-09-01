@@ -12,7 +12,7 @@ operations over the examples:
 
 Usage
     $ cd ROOT/tests/        necessary
-    $ ./run.sh              run all tests inside ROOT/src/*/ directories
+    $ ./run.sh all          run all tests inside ROOT/src/*/ directories
     $ ./run.sh <dir>        run singe test inside ROOT/src/<dir>/
 
 

@@ -84,7 +84,8 @@ fops_open_(struct inode* inode, struct file* file)
 }
 
 
-static int fops_release_(struct inode* inode, struct file* file) 
+static int 
+fops_release_(struct inode* inode, struct file* file) 
 {
    printk(KERN_INFO "fops_close_ = %u:%u\n", major, iminor(inode));
    return 0;

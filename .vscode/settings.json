@@ -10,7 +10,8 @@
     "stdlib.h": "c",
     "dev.h": "c",
     "stdio.h": "c",
-    "cstdlib": "c"
+    "cstdlib": "c",
+    "version.h": "c"
   },
 
   "highlight.regexes": 

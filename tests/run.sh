@@ -34,7 +34,7 @@ RESTORE='\033[0m'
 function print_help()
 {
     echo "Usage:"
-    echo "  ./run.sh            run all tests inside ROOT/src/*/ directories"
+    echo "  ./run.sh all        run all tests inside ROOT/src/*/ directories"
     echo "  ./run.sh <dir>      run single test inside ROOT/src/<dir>/"
 }
 
@@ -256,6 +256,10 @@ case $# in
             print_help
             exit 0
         fi
+
+        # make distclean for common sources 
+        # to be rebuild once before all tests
+        make -C /root/kernel/src/common/ distclean
 
         if [ "$1" = "all" ]
             then  run_all_tests

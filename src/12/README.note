@@ -1,0 +1,13 @@
+Example demonstrates:
+
+	Using device in shared mode (not exclusive = might be opened several times)
+
+
+Execute:
+
+	$ make
+	$ insmod ootm.ko
+	$ ./ootm_rest.out
+	$ echo $?
+	$ rmmod ootm
+	$ make distclean
